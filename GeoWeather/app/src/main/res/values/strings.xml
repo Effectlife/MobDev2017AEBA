@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">RouteTesting</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="calculate">Calculate</string>
+    <string name="destination">Berlin</string>
+    <string name="origin">Hasselt</string>
+    <string name="title_activity_route_on_weather">RouteOnWeatherActivity</string>
+    <string name="weathertypeimage">WeathertypeImage</string>
+    <string name="humidityicon">humidityIcon</string>
+    <string name="temperatureicon">temperatureIcon</string>
+    <string name="windicon">windIcon</string>
+    <string name="reload_current_weather">Reload Current weather</string>
+</resources>
