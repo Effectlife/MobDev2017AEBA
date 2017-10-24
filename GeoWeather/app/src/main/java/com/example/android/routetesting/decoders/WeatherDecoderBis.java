@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
  * Created by AaronEnglerPXL on 10/10/2017.
  */
 
-public abstract class WeatherDecoder {
+public abstract class WeatherDecoderBis {
 
     //TODO: Prevent multiple calls to the api for multiple dates if the dates are in the same result
     public static ArrayList<WeatherInfo> getMoreWeatherFromApi(final Coord coord, final ArrayList<Date> dates) {
@@ -58,6 +58,7 @@ public abstract class WeatherDecoder {
         } else {
             //Log.i("MOREWEATHER", "ApiResult contains data");
             //Log.e("DATEZTOSTRING", dates.toString());
+
         }
         ArrayList<WeatherInfo> infos = new ArrayList<>();
 
@@ -96,12 +97,15 @@ public abstract class WeatherDecoder {
         calendar.setTime(date);
 
         //Remove Minutes and seconds from time
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), 0, 0);
-
-
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
         String currentDay = Helper.getGivenDateInFormat(calendar);
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 13, 0, 0);
+        String currentDayOneHourLater = Helper.getGivenDateInFormat(calendar);
+
+        String questionstring = currentDay+currentDayOneHourLater;
+
         NodeList timeNodes = weatherDoc.getElementsByTagName("time");
-        //Log.e("WEATHER_AS_FORMAT", currentDay);
+        Log.e("WEATHER_AS_FORMAT", questionstring);
         for (int i = 0; i < timeNodes.getLength(); i++) {
             //Log.i("WEATHERDOC", "Running through item: "+(i+1)+"/"+timeNodes.getLength());
             Node node = timeNodes.item(i);
@@ -124,7 +128,31 @@ public abstract class WeatherDecoder {
                     info.setTime(date);
                     i = timeNodes.getLength();
                 }
+
+
             }
+
+            Log.e("MIEP", "Starting second forloops");
+
+            String from = attributes.getNamedItem("from").getNodeValue();
+            String to = attributes.getNamedItem("to").getNodeValue();
+            String tocheck = from+to;
+
+
+            Log.e("MiepFromTo" , questionstring + "|" +tocheck + "|||" + questionstring.equals(tocheck));
+
+
+            if (questionstring.equals(tocheck)) {
+                Log.e("MIEP", "from was Equal");
+
+                    Log.e("MIEP", "to was Equal");
+                    node = node.getChildNodes().item(1);//Skip Location node
+                    info.setSymbol(Integer.parseInt(node.getChildNodes().item(3).getAttributes().getNamedItem("number").getNodeValue()));
+                    Log.e("MIEP", info.getSymbol() + "");
+
+            }
+
+
         }
 
 
@@ -184,10 +212,10 @@ public abstract class WeatherDecoder {
             Calendar c = Calendar.getInstance();
             c.setTime(date);
             int hour = c.get(Calendar.HOUR_OF_DAY);
-            if(hour==11){
-                date.setTime(date.getTime()+3600000); //adds an hour
-            }else if(hour==13){
-                date.setTime(date.getTime()-3600000); //subtracts and hour
+            if (hour == 11) {
+                date.setTime(date.getTime() + 3600000); //adds an hour
+            } else if (hour == 13) {
+                date.setTime(date.getTime() - 3600000); //subtracts and hour
             }
             //endregion
 

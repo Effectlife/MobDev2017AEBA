@@ -34,55 +34,16 @@ public abstract class ApiDocumentBuilder {
 
 
     public static Document decode(int urlType, Object firstArg, Object secondArg) {
-        Log.d("APIDOCBUILDER", "Starting callApi");
+        //Log.d("APIDOCBUILDER", "Starting callApi");
         Document temp = callApi(urlFormat(urlType, firstArg, secondArg));
-        Log.d("APIDOCBUILDER","Finished callApi");
+        //Log.d("APIDOCBUILDER","Finished callApi");
         return temp;
     }
 
     public static Document decode(int urlType, Object firstArg) {
         return callApi(urlFormat(urlType, firstArg, null));
     }
-
-
-    private static void trustAllHosts() {
-
-        X509TrustManager easyTrustManager = new X509TrustManager() {
-
-            public void checkClientTrusted(
-                    X509Certificate[] chain,
-                    String authType) throws CertificateException {
-                // Oh, I am easy!
-            }
-
-            public void checkServerTrusted(
-                    X509Certificate[] chain,
-                    String authType) throws CertificateException {
-                // Oh, I am easy!
-            }
-
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-        };
-
-        // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[]{easyTrustManager};
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
 
     public static Document callApi(String url) {
         Log.d("APIDOCBUILDER","callApi: url: "+ url);
@@ -92,7 +53,7 @@ public abstract class ApiDocumentBuilder {
             dBuilder = dbFactory.newDocumentBuilder();
 
         } catch (ParserConfigurationException e) {
-            System.out.println("DocumentBuilder initialisation failed: " + e.getStackTrace());
+            Log.e("CALLAPI","DocumentBuilder initialisation failed: " + e.getStackTrace());
         }
 
         try {
@@ -121,7 +82,7 @@ public abstract class ApiDocumentBuilder {
                     return null; //TODO: Not Yet Implemented
 
                 case ApiUrl.GOOGLELOC:
-                    return "https://maps.googleapis.com/maps/api/geocode/xml?address=" + firstArg + "&key=" + "AIzaSyDEGUJCH82cBmRRdaWIbp8_BbjZ7noQ23k";
+                    return "https://maps.googleapis.com/maps/api/geocode/xml?address=" + firstArg + "&key=" + "AIzaSyCOTpBb1p994BuJfFqEgX6M3vimH7uKbAU";
 
                 case ApiUrl.GOOGLEDIR:
                     return "https://maps.googleapis.com/maps/api/directions/xml?origin=" + firstArg + "&destination=" + secondArg + "&key=" + "AIzaSyDt3_qXntcjfW6lxv0uv_gQlXKOZxX03ek";
@@ -135,7 +96,7 @@ public abstract class ApiDocumentBuilder {
 
 
                 default:
-                    System.out.println("wrong urlType entered");
+                    Log.e("URLFORMAT","wrong urlType entered");
 
 
             }

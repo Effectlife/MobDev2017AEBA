@@ -6,13 +6,15 @@ package com.example.android.routetesting.lookups;
 
 public enum Weekday {
 
+    //Calendar.WEEK_OF_DAY has Sunday as first day of the week
+    SUNDAY("Sunday"),
     MONDAY("Monday"),
     TUESDAY("Tuesday"),
     WEDNESDAY("Wednesday"),
     THURSDAY("Thursday"),
     FRIDAY("Friday"),
-    SATURDAY("Saturday"),
-    SUNDAY("Sunday");
+    SATURDAY("Saturday");
+
 
     private String value;
 

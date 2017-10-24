@@ -1,6 +1,8 @@
 package com.example.android.routetesting;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.android.routetesting.adapters.CustomListItemAdapter;
 import com.example.android.routetesting.adapters.CustomMenuItemAdapter;
+import com.example.android.routetesting.decoders.RouteDecoder;
 import com.example.android.routetesting.decoders.WeatherDecoder;
 import com.example.android.routetesting.generators.MenuItemGenerator;
 import com.example.android.routetesting.listeners.CustomDrawerClickListener;
@@ -33,49 +36,71 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        setupFirstView();
+
+    }
+
+    private void setupFirstView() {
         ListView drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new CustomMenuItemAdapter(getApplicationContext(), MenuItemGenerator.generate()));
         drawerList.setOnItemClickListener(new CustomDrawerClickListener());
 
-        formatWeatherDetail();
-        populateWeekList();
+        //formatWeatherDetail();
+        //populateWeekList();
 
         Button reloadButton = (Button) findViewById(R.id.reloadBtn);
-
-
 
 
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("ClickListener", "Clicked");
                 formatWeatherDetail();
                 populateWeekList();
             }
         });
-
     }
 
 
     public void populateWeekList() {
         Log.i("POPULATING", "WeekList");
-        GPSTracker tracker = new GPSTracker(this, this);
-        ArrayList<WeatherInfo> weathers = WeatherDecoder.getNextWeekInfo(new Coord(tracker.getLatitude(), tracker.getLongitude()));
 
+
+
+
+        ArrayList<WeatherInfo> weathers = WeatherDecoder.getNextWeekInfo(loadLocationInfo());
 
         ListView weathersList = (ListView) findViewById(R.id.forecastListView);
-        weathersList.setAdapter(new CustomListItemAdapter(this, WeatherInfo.convertListWeatherToListCLI(weathers), false));
 
+
+        weathersList.setAdapter(new CustomListItemAdapter(this, WeatherInfo.convertListWeatherToListCLI(weathers, false)));
+
+    }
+
+    private String getPrefLocation(){
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String pref = sharedPrefs.getString("pref_location","DEFAULT");
+        Log.e("PREFPREF", "pref: "+pref);
+        return pref;
+    }
+
+    //TODO: fix geolocation
+    private Coord loadLocationInfo(){
+       String location = getPrefLocation();
+        if(location.equals("GPS")){
+            GPSTracker tracker = new GPSTracker(this, this);
+            return new Coord(tracker.getLatitude(), tracker.getLongitude());
+        }
+
+
+        return RouteDecoder.geoLocator(location);
     }
 
 
     private void formatWeatherDetail() {
         Log.i("FORMATTING", "WeatherDetail");
 
-        GPSTracker tracker = new GPSTracker(this, this);
-
-
-        WeatherInfo info = WeatherDecoder.getSingleWeatherFromApi(new Coord(tracker.getLatitude(), tracker.getLongitude()), Calendar.getInstance().getTime());
+        WeatherInfo info = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(), Calendar.getInstance().getTime());
 
         TextView dayTv = (TextView) findViewById(R.id.weatherDetailDay);
         TextView tempTv = (TextView) findViewById(R.id.weatherDetailTemp);

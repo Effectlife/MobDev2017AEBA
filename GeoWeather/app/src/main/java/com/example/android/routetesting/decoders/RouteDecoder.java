@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.android.routetesting.lookups.ApiUrl;
 import com.example.android.routetesting.models.Coord;
+import com.example.android.routetesting.models.Helper;
 import com.example.android.routetesting.models.Step;
 
 import org.w3c.dom.Document;
@@ -20,6 +21,46 @@ import java.util.concurrent.ExecutionException;
 
 public abstract class RouteDecoder {
 
+
+    public static Coord geoLocator(final String location) {
+
+        Coord coord = null;
+
+        try {
+            coord = new AsyncTask<Object, Void, Coord>() {
+
+                @Override
+                protected Coord doInBackground(Object... params) {
+
+                    Document doc = ApiDocumentBuilder.decode(ApiUrl.GOOGLELOC, location);
+                    Log.e("GEOLOC", Helper.getStringFromDocument(doc));
+                    NodeList lats = doc.getElementsByTagName("lat");
+                    NodeList lons = doc.getElementsByTagName("lng");
+
+
+                    for(int i = 0; i < lats.getLength(); i++){
+                        try{
+                            Log.e("MIEP"+i, lats.item(i).getTextContent()+","+lons.item(i).getTextContent());
+                        }catch (Exception e){
+                            Log.e("MIEP"+i, "Error");
+                        }
+                    }
+
+
+                    return new Coord(Float.parseFloat(lats.item(0).getTextContent()), Float.parseFloat(lons.item(0).getTextContent()));
+
+
+                }
+            }.execute().get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Coord(0, 0);
+        }
+        return coord;
+
+    }
+
+
     public static ArrayList<Step> routeStepFromApi(final int maxDistance, final String firstAddress, final String secondAddress) {
         ArrayList<Step> steps = new ArrayList<>();
         try {
@@ -28,9 +69,10 @@ public abstract class RouteDecoder {
 
                 @Override
                 protected ArrayList<Step> doInBackground(Object... objects) {
-                    Log.d("ROUTEDECODER","Starting Decode");
+                    //Log.d("ROUTEDECODER","Starting Decode");
                     Document directions = ApiDocumentBuilder.decode(ApiUrl.GOOGLEDIR, (String) firstAddress, (String) secondAddress);
-                    Log.d("ROUTEDECODER","Finished Decode");
+                    //Log.d("ROUTEDECODER","Finished Decode");
+                    Log.e("STEPS", Helper.getStringFromDocument(directions));
                     NodeList steps = directions.getElementsByTagName("step");
 
                     ArrayList<Step> allSteps = new ArrayList<Step>();

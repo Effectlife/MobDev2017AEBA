@@ -37,7 +37,7 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ArrayList<WeatherInfo> infos;
                 infos = WeatherDecoder.getWeathersOnRoute(50000, addressOneText.getText().toString(), addressTwoText.getText().toString());
-                listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), WeatherInfo.convertListWeatherToListCLI(infos), true));
+                listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), WeatherInfo.convertListWeatherToListCLI(infos, true)));
             }
         });
 

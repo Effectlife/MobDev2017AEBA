@@ -27,10 +27,9 @@ public class CustomListItemAdapter extends BaseAdapter {
     private ArrayList<CustomListItem> items;
     private boolean city;
 
-    public CustomListItemAdapter(Context ctx, ArrayList<CustomListItem> items, boolean city) {
+    public CustomListItemAdapter(Context ctx, ArrayList<CustomListItem> items) {
         this.ctx = ctx;
         this.items = items;
-        this.city = city;
     }
 
     @Override
@@ -63,20 +62,8 @@ public class CustomListItemAdapter extends BaseAdapter {
 
         temperatureTextView.setText(items.get(position).getTemperature() + "");
 
+        cityTextView.setText(items.get(position).getCity());
 
-        if (city) {
-            cityTextView.setText(items.get(position).getCity());
-        } else {
-            try {
-                Calendar c = Calendar.getInstance();
-                c.setTime(items.get(position).getDate());
-                cityTextView.setText(Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue());
-                Log.d("SUCCESS", "Success "+cityTextView.getText());
-            } catch (Exception e) {
-                Log.e("FAILED","Failed "+position);
-                e.printStackTrace();
-            }
-        }
         return convertView;
     }
 }

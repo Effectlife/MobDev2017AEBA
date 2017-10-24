@@ -21,6 +21,8 @@ import android.util.Log;
  * Created by AaronEnglerPXL on 19/10/2017.
  */
 
+//
+
 public class GPSTracker extends Service implements LocationListener {
 
     int MY_PERMISSIONS_REQUEST_LOCATION;
@@ -45,7 +47,7 @@ public class GPSTracker extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60; // 1 minute
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -109,7 +111,7 @@ public class GPSTracker extends Service implements LocationListener {
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
+                        //Log.d("GPS Enabled", "GPS Enabled");
                         if (locationManager != null) {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -129,15 +131,6 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
 
-    /**
-     * Stop using GPS listener
-     * Calling this function will stop using GPS in your app.
-     */
-    public void stopUsingGPS() {
-        if (locationManager != null) {
-            locationManager.removeUpdates(GPSTracker.this);
-        }
-    }
 
 
     /**
@@ -164,49 +157,6 @@ public class GPSTracker extends Service implements LocationListener {
         // return longitude
         return longitude;
     }
-
-    /**
-     * Function to check GPS/Wi-Fi enabled
-     *
-     * @return boolean
-     */
-    public boolean canGetLocation() {
-        return this.canGetLocation;
-    }
-
-
-    /**
-     * Function to show settings alert dialog.
-     * On pressing the Settings button it will launch Settings Options.
-     */
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-        // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
-
-        // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-
-        // On pressing the Settings button.
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
-        });
-
-        // On pressing the cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        // Showing Alert Message
-        alertDialog.show();
-    }
-
 
     @Override
     public void onLocationChanged(Location location) {

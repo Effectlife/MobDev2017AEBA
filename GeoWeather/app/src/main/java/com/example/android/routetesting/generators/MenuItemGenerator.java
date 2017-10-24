@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public abstract class MenuItemGenerator {
-    private static String[] menuEntries = {"Location", "Settings", "Weather on Route", "About", "Exit"};
+    private static String[] menuEntries = {"Settings", "Weather on Route", "About"};
 
     public static ArrayList<CustomMenuItem> generate(){
         ArrayList<CustomMenuItem> items = new ArrayList<>();
