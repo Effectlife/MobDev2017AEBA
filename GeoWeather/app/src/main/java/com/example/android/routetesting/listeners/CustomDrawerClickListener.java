@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.android.routetesting.AboutActivity;
 import com.example.android.routetesting.RouteOnWeatherActivity;
 import com.example.android.routetesting.SettingsActivity;
 
@@ -29,7 +30,8 @@ public class CustomDrawerClickListener implements ListView.OnItemClickListener {
                 parent.getContext().startActivity(intent);
                 break;
             case 2:
-
+                intent = new Intent(parent.getContext(), AboutActivity.class);
+                parent.getContext().startActivity(intent);
                 break;
 
 

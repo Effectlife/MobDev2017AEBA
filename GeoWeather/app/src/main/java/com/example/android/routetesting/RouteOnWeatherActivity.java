@@ -1,8 +1,10 @@
 package com.example.android.routetesting;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,7 +39,17 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ArrayList<WeatherInfo> infos;
                 infos = WeatherDecoder.getWeathersOnRoute(50000, addressOneText.getText().toString(), addressTwoText.getText().toString());
-                listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), WeatherInfo.convertListWeatherToListCLI(infos, true)));
+                Session.routeInfo=infos;
+                listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), WeatherInfo.convertListWeatherToListCLI(infos, true, true)));
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Session.currentSelectedInfo=Session.routeInfo.get(position);
+                        startActivity(new Intent(parent.getContext(), DetailActivity.class));
+                    }
+                });
+
             }
         });
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -43,17 +44,17 @@ public abstract class ApiDocumentBuilder {
     public static Document decode(int urlType, Object firstArg) {
         return callApi(urlFormat(urlType, firstArg, null));
     }
-    
+
 
     public static Document callApi(String url) {
-        Log.d("APIDOCBUILDER","callApi: url: "+ url);
+        Log.i("APIDOCBUILDER", "callApi: url: " + url);
 
 
         try {
             dBuilder = dbFactory.newDocumentBuilder();
 
         } catch (ParserConfigurationException e) {
-            Log.e("CALLAPI","DocumentBuilder initialisation failed: " + e.getStackTrace());
+            Log.e("CALLAPI", "DocumentBuilder initialisation failed: " + e.getStackTrace());
         }
 
         try {
@@ -65,10 +66,8 @@ public abstract class ApiDocumentBuilder {
             return parsed;
 
 
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            Log.e("INTERNET", "None found...");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,27 +75,34 @@ public abstract class ApiDocumentBuilder {
     }
 
     public static String urlFormat(int urlType, Object firstArg, Object secondArg) {
+
+        String t;
         try {
             switch (urlType) {
                 case ApiUrl.YAHOOWEATHER:
                     return null; //TODO: Not Yet Implemented
 
                 case ApiUrl.GOOGLELOC:
-                    return "https://maps.googleapis.com/maps/api/geocode/xml?address=" + firstArg + "&key=" + "AIzaSyCOTpBb1p994BuJfFqEgX6M3vimH7uKbAU";
 
+                    t = "https://maps.googleapis.com/maps/api/geocode/xml?address=" + firstArg + "&key=" + "AIzaSyCOTpBb1p994BuJfFqEgX6M3vimH7uKbAU";
+//                    Log.d("URL", t);
+                    return t;
                 case ApiUrl.GOOGLEDIR:
-                    return "https://maps.googleapis.com/maps/api/directions/xml?origin=" + firstArg + "&destination=" + secondArg + "&key=" + "AIzaSyDt3_qXntcjfW6lxv0uv_gQlXKOZxX03ek";
-
+                    t = "https://maps.googleapis.com/maps/api/directions/xml?origin=" + firstArg + "&destination=" + secondArg + "&key=" + "AIzaSyDt3_qXntcjfW6lxv0uv_gQlXKOZxX03ek";
+//                    Log.d("URL", t);
+                    return t;
                 case ApiUrl.METNO:
-                    return "https://api.met.no/weatherapi/locationforecast/1.9/?lat=" + firstArg + "&lon=" + secondArg;
-
+                    t = "https://api.met.no/weatherapi/locationforecast/1.9/?lat=" + firstArg + "&lon=" + secondArg;
+//                    Log.d("URL", t);
+                    return t;
 
                 case ApiUrl.MAPQUEST:
-                    return "https://www.mapquestapi.com/geocoding/v1/reverse?key=JYFF5aW2u906EZwyCpfS2QAiqgg6AWUk&location="+firstArg+"%2C"+secondArg+"&outFormat=xml&thumbMaps=false";
+                    t = "https://www.mapquestapi.com/geocoding/v1/reverse?key=JYFF5aW2u906EZwyCpfS2QAiqgg6AWUk&location=" + firstArg + "%2C" + secondArg + "&outFormat=xml&thumbMaps=false";
 
-
+//                    Log.d("URL", t);
+                    return t;
                 default:
-                    Log.e("URLFORMAT","wrong urlType entered");
+                    Log.e("URLFORMAT", "wrong urlType entered");
 
 
             }

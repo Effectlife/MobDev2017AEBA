@@ -25,7 +25,7 @@ public class Coord {
     }
 
     public Coord(double latitude, double longitude) {
-        this((float)latitude, (float)longitude);
+        this((float) latitude, (float) longitude);
     }
 
     public float getLat() {
@@ -104,17 +104,17 @@ public class Coord {
         NodeList children = location.getChildNodes();
         Node hopeType = null;
         Node node = null;
-        for (int i = 0; i < children.getLength(); i++ ){
+        for (int i = 0; i < children.getLength(); i++) {
             node = children.item(i);
 
             try {
                 hopeType = node.getAttributes().getNamedItem("type");
                 //Log.e("NODETYPE", hopeType.getNodeValue());
-            }catch (Exception e){
+            } catch (Exception e) {
                 continue;
             }
 
-            if(node != null && hopeType != null && hopeType.getNodeValue().equals("City")){
+            if (node != null && hopeType != null && hopeType.getNodeValue().equals("City")) {
                 //Log.d("DECODECITY", node.getTextContent()+" ");
                 return node.getTextContent();
             }
@@ -125,6 +125,16 @@ public class Coord {
 
         return "Unknown";
 
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        Coord coord = (Coord) obj;
+        if (lat == coord.lat && lon == coord.lon) {
+            return true;
+        }
+        return false;
     }
 
     @Override

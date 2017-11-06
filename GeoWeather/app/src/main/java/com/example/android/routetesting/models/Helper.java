@@ -1,6 +1,10 @@
 package com.example.android.routetesting.models;
 
 
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
+import com.example.android.routetesting.MainActivity;
 import com.example.android.routetesting.models.Coord;
 
 import org.w3c.dom.Document;
@@ -20,6 +24,17 @@ import javax.xml.transform.stream.StreamResult;
  * Created by Effectlife on 2/10/2017.
  */
 public abstract class Helper {
+
+
+
+
+
+
+
+
+    public static float celsiusToFahrenheit(float celsius) {
+        return (celsius * 1.8f) + 32f;
+    }
 
 
     public static float avgDst(float dist1, float dist2) {
@@ -85,16 +100,13 @@ public abstract class Helper {
 
     public static String getCurrentDateInFormat() {
         return getGivenDateInFormat(Calendar.getInstance());
-        
+
 
     }
 
 
-
-    public static String getStringFromDocument(Document doc)
-    {
-        try
-        {
+    public static String getStringFromDocument(Document doc) {
+        try {
             DOMSource domSource = new DOMSource(doc);
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
@@ -103,9 +115,7 @@ public abstract class Helper {
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(domSource, result);
             return writer.toString();
-        }
-        catch(TransformerException ex)
-        {
+        } catch (TransformerException ex) {
             ex.printStackTrace();
             return null;
         }

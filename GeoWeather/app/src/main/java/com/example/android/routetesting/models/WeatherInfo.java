@@ -1,5 +1,11 @@
 package com.example.android.routetesting.models;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.example.android.routetesting.MainActivity;
 import com.example.android.routetesting.lookups.Weekday;
 
 import java.util.ArrayList;
@@ -13,6 +19,10 @@ import java.util.Date;
 public class WeatherInfo {
     private Coord location;
     private float temperature;
+
+    private float minTemp, maxTemp;
+
+
     private float humidity;
     private float windspeed;
     private String direction;
@@ -22,9 +32,11 @@ public class WeatherInfo {
     public WeatherInfo() {
     }
 
-    public WeatherInfo(Coord location, float temperature, float humidity, float windspeed, String direction, Date time, int symbol) {
+    public WeatherInfo(Coord location, float temperature, float minTemp, float maxTemp, float humidity, float windspeed, String direction, Date time, int symbol) {
         this.location = location;
         this.temperature = temperature;
+        this.minTemp = minTemp;
+        this.maxTemp = maxTemp;
         this.humidity = humidity;
         this.windspeed = windspeed;
         this.direction = direction;
@@ -46,6 +58,22 @@ public class WeatherInfo {
 
     public void setTemperature(float temperature) {
         this.temperature = temperature;
+    }
+
+    public float getMinTemp() {
+        return minTemp;
+    }
+
+    public void setMinTemp(float minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    public float getMaxTemp() {
+        return maxTemp;
+    }
+
+    public void setMaxTemp(float maxTemp) {
+        this.maxTemp = maxTemp;
     }
 
     public float getHumidity() {
@@ -80,14 +108,15 @@ public class WeatherInfo {
         this.time = time;
     }
 
-    public static ArrayList<CustomListItem> convertListWeatherToListCLI(ArrayList<WeatherInfo> infos, boolean cityname) {
+    public static ArrayList<CustomListItem> convertListWeatherToListCLI(ArrayList<WeatherInfo> infos, boolean cityname, boolean humidity) {
 
-
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
+        boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
 
 
         ArrayList<CustomListItem> items = new ArrayList<>();
         for (WeatherInfo info : infos) {
-            String title="ERRORED";
+            String title = "ERRORED";
             if (cityname) {
                 title = info.getLocation().getCityName();
 
@@ -95,7 +124,7 @@ public class WeatherInfo {
                 try {
                     Calendar c = Calendar.getInstance();
                     c.setTime(info.getTime());
-                    title = Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue();
+                    title = Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue()+" ";
                     //Log.d("SUCCESS", "Success "+cityTextView.getText());
                 } catch (Exception e) {
                     //Log.e("FAILED","Failed "+position);
@@ -105,21 +134,42 @@ public class WeatherInfo {
 
 
 
-            items.add(new CustomListItem(title, info.getTemperature() + "",info.getTime()) );
+if(humidity){
 
+    items.add(new CustomListItem(title+" ", info.getHumidity()+"%", info.getTime()));
+
+}else {
+    String temperature;
+    if (fahrenheit) {
+        temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";
+    } else {
+        temperature = info.getTemperature() + " °C";
+    }
+    items.add(new CustomListItem(title+" ", temperature, info.getTime()));
+}
 
         }
         return items;
     }
 
     public CustomListItem convertToCustomListItem(boolean city) {
-        if(city)
-        return new CustomListItem(getLocation().getCityName(), getTemperature() + "", getTime());
-        else{
+
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
+        boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
+        String temperature;
+        if (fahrenheit) {
+            temperature = Helper.celsiusToFahrenheit(getTemperature()) + " °F";
+        } else {
+            temperature = getTemperature() + " °C";
+        }
+        if (city)
+            return new CustomListItem(getLocation().getCityName(), temperature, getTime());
+        else {
             try {
                 Calendar c = Calendar.getInstance();
                 c.setTime(getTime());
-                return new CustomListItem(Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue(),getTemperature()+"", getTime());
+                return new CustomListItem(Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue(), getTemperature() + "", getTime());
                 //Log.d("SUCCESS", "Success "+cityTextView.getText());
             } catch (Exception e) {
                 //Log.e("FAILED","Failed "+position);
@@ -131,7 +181,14 @@ public class WeatherInfo {
 
     @Override
     public String toString() {
-        return "location: " + location + "; temp: " + temperature + "; humid: " + humidity + "; windsp: " + windspeed + "; direction:" + direction;
+        return "location: " + location
+                + "; temp: " + temperature
+                + "; minTemp: " + minTemp
+                + "; maxTemp: " + maxTemp
+                + "; humid: " + humidity
+                + "; windsp: " + windspeed
+                + "; direction:" + direction
+                + "; symbol:" + symbol;
     }
 
     public int getSymbol() {

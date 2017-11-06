@@ -1,6 +1,7 @@
 package com.example.android.routetesting.decoders;
 
 import android.os.AsyncTask;
+import android.util.IntProperty;
 import android.util.Log;
 
 import com.example.android.routetesting.lookups.ApiUrl;
@@ -29,6 +30,15 @@ public abstract class WeatherDecoder {
     public static ArrayList<WeatherInfo> getMoreWeatherFromApi(final Coord coord, final ArrayList<Date> dates) {
         //Log.d("MOREWEATHER", "GotIntoMoreWeather");
 
+
+        if (coord.equals(new Coord(1000, 1000))) {
+
+            ArrayList<WeatherInfo> infos = new ArrayList<>();
+            infos.add(new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0));
+            return infos;
+        }
+
+
         if (dates.isEmpty()) {
             return null;
         }
@@ -40,8 +50,14 @@ public abstract class WeatherDecoder {
                 @Override
                 protected Document doInBackground(Object... objects) {
                     //Log.d("MOREWEATHER", "doInBackground");
+
+
                     Document temp = ApiDocumentBuilder.decode(ApiUrl.METNO, coord.getLat(), coord.getLon());
-//                    Log.i("ApiDocumentBuilder: ", "starting decode from api: "+temp.getChildNodes().item(3).getChildNodes().getLength());
+                    if (temp == null) {
+                        Log.i("DOCUMENT", "NULL");
+                        return null;
+                    }
+                    Log.i("DOCUMENT", Helper.getStringFromDocument(temp));
                     return temp;
 
                 }
@@ -75,61 +91,113 @@ public abstract class WeatherDecoder {
         dates.add(date);
 
         ArrayList<WeatherInfo> infos = getMoreWeatherFromApi(coord, dates);
-        try {
-            if (infos == null) {
-                Log.i("SINGLEWEATHERFROMAPI", "infos == null");
-            }
 
-        } catch (Exception e) {
-            Log.e("SINGLEWEATHERFROMAPI", "infos.toString() nulled -> exception");
+        if (infos == null || infos.isEmpty()) {
+            Log.i("SINGLEWEATHERFROMAPI", "infos == null or empty");
+            return null;
         }
-        if (infos.isEmpty()) return null;
+
 
         return infos.get(0);
     }
 
 
     private static WeatherInfo getWeatherFromDocument(final Coord coord, final Date date, final Document weatherDoc) {
-        //Log.i("WEATHERDOC", "Got into getWeatherFromDocument");
-        WeatherInfo info = new WeatherInfo();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
 
-        //Remove Minutes and seconds from time
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), 0, 0);
+        try {
+            WeatherInfo info = new WeatherInfo();
 
 
-        String currentDay = Helper.getGivenDateInFormat(calendar);
-        NodeList timeNodes = weatherDoc.getElementsByTagName("time");
-        //Log.e("WEATHER_AS_FORMAT", currentDay);
-        for (int i = 0; i < timeNodes.getLength(); i++) {
-            //Log.i("WEATHERDOC", "Running through item: "+(i+1)+"/"+timeNodes.getLength());
-            Node node = timeNodes.item(i);
-            NamedNodeMap attributes = node.getAttributes();
+            //Log.i("WEATHERDOC", "Got into getWeatherFromDocument");
 
-            //Log.d("WEATHERDOC", attributes.getNamedItem("from").getNodeValue() + "|||||" + currentDay + "TRUE/FALSE: "+attributes.getNamedItem("from").getNodeValue().equals(currentDay));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
 
-            if (attributes.getNamedItem("from").getNodeValue().equals(currentDay)) {
-                if (attributes.getNamedItem("to").getNodeValue().equals(currentDay)) {
+            String currentDay12;
 
-                    node = node.getChildNodes().item(1);//Skip Location node
-//                  for (int lol = 1; lol < node.getChildNodes().getLength(); lol++)
-//                  Log.i("WEATHERDECODER", "item(" + lol + "): " + node.getChildNodes().item(lol).getNodeName());
-                    info.setLocation(coord);
-                    info.setTemperature(Float.parseFloat(node.getChildNodes().item(1).getAttributes().getNamedItem("value").getNodeValue()));
-                    info.setDirection(node.getChildNodes().item(3).getAttributes().getNamedItem("name").getNodeValue());
-                    info.setHumidity(Float.parseFloat(node.getChildNodes().item(7).getAttributes().getNamedItem("value").getNodeValue()));
-                    info.setWindspeed(Float.parseFloat(node.getChildNodes().item(5).getAttributes().getNamedItem("mps").getNodeValue()));
+            if (calendar.get(Calendar.HOUR_OF_DAY) > 12) {
+                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), 0, 0);
+            } else {
+                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 12, 0, 0);
 
-                    info.setTime(date);
-                    i = timeNodes.getLength();
-                }
             }
+            currentDay12 = Helper.getGivenDateInFormat(calendar);
+            //Remove Minutes and seconds from time
+
+
+            Log.e("CurrentDay12", currentDay12);
+
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 13, 0, 0);
+            String currentDay13 = Helper.getGivenDateInFormat(calendar);
+            Log.e("CurrentDay13", currentDay13);
+
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 6, 0, 0);
+            String currentDay06 = Helper.getGivenDateInFormat(calendar);
+            Log.e("CurrentDay06", currentDay06);
+
+            NodeList timeNodes = weatherDoc.getElementsByTagName("time");
+
+            for (int i = 0; i < timeNodes.getLength(); i++) {
+
+                Node node = timeNodes.item(i);
+                NamedNodeMap attributes = node.getAttributes();
+
+
+                if (attributes.getNamedItem("from").getNodeValue().equals(currentDay12)) {
+                    if (attributes.getNamedItem("to").getNodeValue().equals(currentDay12)) {
+                        Log.i("DECODE", "From and To = " + currentDay12 + "; loop: " + i);
+                        node = node.getChildNodes().item(1);//Skip Location node
+
+                        info.setLocation(coord);
+
+                        info.setTemperature(Float.parseFloat(node.getChildNodes().item(1).getAttributes().getNamedItem("value").getNodeValue()));
+
+                        info.setDirection(node.getChildNodes().item(3).getAttributes().getNamedItem("name").getNodeValue());
+
+                        info.setHumidity(Float.parseFloat(node.getChildNodes().item(7).getAttributes().getNamedItem("value").getNodeValue()));
+
+                        info.setWindspeed(Float.parseFloat(node.getChildNodes().item(5).getAttributes().getNamedItem("mps").getNodeValue()));
+
+
+                        info.setTime(date);
+                        Log.i("TEMPINFO_1212", info.toString());
+                    }
+                    if ((!currentDay12.equals(currentDay13)) && attributes.getNamedItem("to").getNodeValue().equals(currentDay13)) {
+                        Log.i("DECODE", "From = " + currentDay12 + ";To = " + currentDay13 + "; loop: " + i);
+                        node = node.getChildNodes().item(1);//Skip Location node
+
+                        String tem = node.getChildNodes().item(3).getAttributes().getNamedItem("number").getNodeValue();
+                        Log.i("TEM", tem);
+                        info.setSymbol(Integer.parseInt(tem));
+                        Log.i("TEMPINFO_1213", info.toString());
+
+                    }
+
+                }
+
+                if (attributes.getNamedItem("from").getNodeValue().equals(currentDay06)) {
+                    if (attributes.getNamedItem("to").getNodeValue().equals(currentDay12)) {
+
+                        Log.i("DECODE", "From = " + currentDay06 + ";To = " + currentDay12 + "; loop: " + i);
+
+                        node = node.getChildNodes().item(1);//Skip Location node
+                        info.setMinTemp(Float.parseFloat(node.getChildNodes().item(3).getAttributes().getNamedItem("value").getNodeValue()));
+                        info.setMaxTemp(Float.parseFloat(node.getChildNodes().item(5).getAttributes().getNamedItem("value").getNodeValue()));
+                        Log.i("TEMPINFO_0612", info.toString());
+                    }
+                }
+
+
+            }
+
+            Log.e("TEMPINFO_FINI", info.toString());
+            return info;
+        } catch (Exception e) {
+            Log.e("WEATHERDOC_ERROR", e.getLocalizedMessage());
         }
+        return null;
 
 
-        Log.e("WEATHERDOC", "newInfo: " + info);
-        return info;
     }
 
     public static ArrayList<WeatherInfo> getWeathersOnRoute(int maxDistance, String firstAddress, String secondAddress) {
@@ -184,10 +252,10 @@ public abstract class WeatherDecoder {
             Calendar c = Calendar.getInstance();
             c.setTime(date);
             int hour = c.get(Calendar.HOUR_OF_DAY);
-            if(hour==11){
-                date.setTime(date.getTime()+3600000); //adds an hour
-            }else if(hour==13){
-                date.setTime(date.getTime()-3600000); //subtracts and hour
+            if (hour == 11) {
+                date.setTime(date.getTime() + 3600000); //adds an hour
+            } else if (hour == 13) {
+                date.setTime(date.getTime() - 3600000); //subtracts and hour
             }
             //endregion
 

@@ -20,7 +20,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/reload_current_weather" />
-
+            <ProgressBar
+                android:id="@+id/mainProgressBar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:visibility="gone"/>
             <include
                 android:id="@+id/weatherDetail"
                 layout="@layout/weather_detail" />

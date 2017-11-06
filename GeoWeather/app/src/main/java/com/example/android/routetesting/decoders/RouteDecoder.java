@@ -34,9 +34,13 @@ public abstract class RouteDecoder {
 
                     Document doc = ApiDocumentBuilder.decode(ApiUrl.GOOGLELOC, location);
                     Log.e("GEOLOC", Helper.getStringFromDocument(doc));
+
+                    if(doc.getElementsByTagName("status").item(0).getTextContent().equals("ZERO_RESULTS")){
+                        return new Coord(1000,1000); //returns an normally invalid coordinate to inform the caller the location was not found
+                    }
+
                     NodeList lats = doc.getElementsByTagName("lat");
                     NodeList lons = doc.getElementsByTagName("lng");
-
 
                     for(int i = 0; i < lats.getLength(); i++){
                         try{
@@ -46,10 +50,7 @@ public abstract class RouteDecoder {
                         }
                     }
 
-
                     return new Coord(Float.parseFloat(lats.item(0).getTextContent()), Float.parseFloat(lons.item(0).getTextContent()));
-
-
                 }
             }.execute().get();
         } catch (Exception e) {
