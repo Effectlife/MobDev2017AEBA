@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- The main content view -->
-    <FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,17 +14,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <Button
-                android:id="@+id/reloadBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/reload_current_weather" />
-            <ProgressBar
-                android:id="@+id/mainProgressBar"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                />
+            <!--<ProgressBar-->
+                <!--android:id="@+id/mainProgressBar"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:visibility="gone"-->
+                <!--/>-->
             <include
                 android:id="@+id/weatherDetail"
                 layout="@layout/weather_detail" />
@@ -41,7 +36,7 @@
         </LinearLayout>
 
 
-    </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
     <!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"

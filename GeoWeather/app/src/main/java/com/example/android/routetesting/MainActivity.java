@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static Context context;
+    private SwipeRefreshLayout swipeContainer;
 
 
     public static Context getAppContext() {
@@ -53,12 +55,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         MainActivity.context = getApplicationContext();
+
+
+
         setContentView(R.layout.activity_main);
         setupFirstView();
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.content_frame);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                update();
+                if(swipeContainer.isRefreshing())
+                    swipeContainer.setRefreshing(false);
+            }
+
+        });
 
 
     }
@@ -71,28 +85,17 @@ public class MainActivity extends AppCompatActivity {
 
         update();
 
-
-        Button reloadButton = (Button) findViewById(R.id.reloadBtn);
-
-
-        reloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                update();
-            }
-        });
     }
 
     private void update() {
 
-
         AsyncTask task = new AsyncTask() {
-            ProgressBar bar = findViewById(R.id.mainProgressBar);
+//            ProgressBar bar = findViewById(R.id.mainProgressBar);
 
 
             @Override
             protected void onPreExecute() {
-                bar.setVisibility(View.VISIBLE);
+//                bar.setVisibility(View.VISIBLE);
                 super.onPreExecute();
             }
 
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Object o) {
-                bar.setVisibility(GONE);
+//                bar.setVisibility(GONE);
                 super.onPostExecute(o);
             }
         };
