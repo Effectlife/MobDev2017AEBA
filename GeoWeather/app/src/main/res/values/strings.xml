@@ -30,6 +30,8 @@
     <string name="pref_description_gpsoverride">Use gps for notifications instead of the Location setting</string>
     <string name="pref_title_gpsoverride">GPS override notifications</string>
     <string name="geoweather_about_message">GeoWeather is a project made by Aaron Engler and Berkan Aktag for Mobile Development at Hogeschool PXL Hasselt</string>
+    <string name="origin_address">Origin address</string>
+    <string name="destination_address">Destination address</string>
 
 
 </resources>

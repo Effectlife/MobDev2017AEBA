@@ -4,13 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.routetesting.RouteOnWeatherActivity">
+    tools:context="com.example.android.routetesting.RouteOnWeatherActivity"
+    >
 
 
     <LinearLayout
         android:layout_width="395dp"
         android:layout_height="495dp"
+
+
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/origin_address" />
 
         <EditText
             android:id="@+id/addressOneText"
@@ -23,6 +31,14 @@
             android:text="@string/origin"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="0dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/destination_address" />
 
         <EditText
             android:id="@+id/addressTwoText"
@@ -35,7 +51,10 @@
             android:text="@string/destination"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="50dp" />
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"/>
         <Button
             android:id="@+id/calculateButton"
             android:layout_width="139dp"
@@ -44,6 +63,12 @@
             android:text="@string/calculate"
             tools:layout_editor_absoluteX="10dp"
             tools:layout_editor_absoluteY="96dp" />
+        <ProgressBar
+            android:id="@+id/routeProgressBar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            />
 
 
         <ListView

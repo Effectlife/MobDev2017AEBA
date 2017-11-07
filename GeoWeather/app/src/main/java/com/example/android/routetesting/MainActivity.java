@@ -39,8 +39,8 @@ import static android.view.View.GONE;
 public class MainActivity extends AppCompatActivity {
 
 
-      //WeatherIcons come from
-      //https://vclouds.deviantart.com/art/VClouds-Weather-Icons-179152045
+    //WeatherIcons come from
+    //https://vclouds.deviantart.com/art/VClouds-Weather-Icons-179152045
 
 
     private static Context context;
@@ -69,16 +69,8 @@ public class MainActivity extends AppCompatActivity {
         drawerList.setAdapter(new CustomMenuItemAdapter(getApplicationContext(), MenuItemGenerator.generate()));
         drawerList.setOnItemClickListener(new CustomDrawerClickListener());
 
-        formatWeatherDetail();
-        populateWeekList();
+        update();
 
-
-
-
-
-        WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(this, getNotificationGPS()), Calendar.getInstance().getTime());
-
-        addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
 
         Button reloadButton = (Button) findViewById(R.id.reloadBtn);
 
@@ -86,14 +78,57 @@ public class MainActivity extends AppCompatActivity {
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                populateWeekList();
-                formatWeatherDetail();
-                WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(new Activity(), getNotificationGPS()), Calendar.getInstance().getTime());
-                addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
-
+                update();
             }
         });
     }
+
+    private void update() {
+
+
+        AsyncTask task = new AsyncTask() {
+            ProgressBar bar = findViewById(R.id.mainProgressBar);
+
+
+            @Override
+            protected void onPreExecute() {
+                bar.setVisibility(View.VISIBLE);
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(MainActivity.this, getNotificationGPS()), Calendar.getInstance().getTime());
+
+                        addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
+
+                        formatWeatherDetail();
+                        populateWeekList();
+                    }
+                });
+
+
+                return null;
+
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                bar.setVisibility(GONE);
+                super.onPostExecute(o);
+            }
+        };
+
+        task.execute();
+
+
+    }
+
 
     private boolean getNotificationGPS() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
@@ -104,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void populateWeekList() {
         Log.i("POPULATING", "WeekList");
-
 
 
         Coord locinfo = loadLocationInfo(new Activity(), false);
@@ -138,8 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            Log.e("STACKTRACE", e.getMessage());
-            Log.e("STACKTRACE", e.getLocalizedMessage());
+           e.printStackTrace();
         }
 
 
@@ -230,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
     //TODO: fix geolocation
     public static Coord loadLocationInfo(Activity activity, boolean gpsOverride) {
         String location = getPrefLocation();
-        if (location.equals("GPS") ||gpsOverride) {
+        if (location.equals("GPS") || gpsOverride) {
             GPSTracker tracker = new GPSTracker(getAppContext(), activity);
             return new Coord(tracker.getLatitude(), tracker.getLongitude());
         }
@@ -243,8 +276,7 @@ public class MainActivity extends AppCompatActivity {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
                 .setSmallIcon(R.drawable.main_icon)
                 .setContentTitle("GeoWeather")
-                .setContentText("The temp in "+locationName+" is "+ temperature)
-                ;
+                .setContentText("The temp in " + locationName + " is " + temperature);
 
         NotificationManager mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mManager.notify(1, mBuilder.build());

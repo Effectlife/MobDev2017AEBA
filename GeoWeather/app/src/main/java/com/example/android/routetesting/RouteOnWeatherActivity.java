@@ -1,12 +1,14 @@
 package com.example.android.routetesting;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.routetesting.adapters.CustomListItemAdapter;
@@ -33,27 +35,61 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
 
 
-
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<WeatherInfo> infos;
-                infos = WeatherDecoder.getWeathersOnRoute(50000, addressOneText.getText().toString(), addressTwoText.getText().toString());
-                Session.routeInfo=infos;
-                listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), WeatherInfo.convertListWeatherToListCLI(infos, true, true)));
+                update();
 
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Session.currentSelectedInfo=Session.routeInfo.get(position);
-                        startActivity(new Intent(parent.getContext(), DetailActivity.class));
-                    }
-                });
 
             }
         });
 
 
+    }
+
+    private void update() {
+
+        AsyncTask task = new AsyncTask() {
+            ProgressBar bar = findViewById(R.id.routeProgressBar);
+
+            @Override
+            protected void onPreExecute() {
+                bar.setVisibility(View.VISIBLE);
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+
+                RouteOnWeatherActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ArrayList<WeatherInfo> infos;
+                        infos = WeatherDecoder.getWeathersOnRoute(50000, addressOneText.getText().toString(), addressTwoText.getText().toString());
+                        Session.routeInfo = infos;
+                        listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), WeatherInfo.convertListWeatherToListCLI(infos, true, true)));
+
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Session.currentSelectedInfo = Session.routeInfo.get(position);
+                                startActivity(new Intent(parent.getContext(), DetailActivity.class));
+                            }
+                        });
+                    }
+                });
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                bar.setVisibility(View.GONE);
+                super.onPostExecute(o);
+            }
+        };
+        task.execute();
     }
 
 }
