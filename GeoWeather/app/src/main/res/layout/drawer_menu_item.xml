@@ -4,12 +4,8 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     >
 
-    <ImageView
-        android:id="@+id/menuImage"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
-
     <TextView
+        android:textColor="@android:color/black"
         android:id="@+id/menuText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

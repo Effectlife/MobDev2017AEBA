@@ -1,9 +1,7 @@
 package com.example.android.routetesting;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,10 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.routetesting.adapters.CustomListItemAdapter;
@@ -84,44 +80,39 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
 
-    public void populateWeekList() {
-        Log.i("POPULATING", "WeekList");
 
 
-        Coord locinfo = loadLocationInfo(false);
-        if (locinfo.equals(new Coord(1000, 1000))) {
-            Log.i("Coordinate", "TRUE  " + locinfo.toString());
-            return;
-        } else {
-            Log.i("Coordinate", "FALSE " + locinfo.toString());
-            Session.weekInfo = WeatherDecoder.getNextWeekInfo(locinfo);
-        }
+
+    public void populateWeekList(final ArrayList<WeatherInfo> weatherInfos) {
+        Log.i("POPULATING", "1");
 
 
-        for (WeatherInfo info : Session.weekInfo) {
+        for (WeatherInfo info : weatherInfos) {
             Log.i("POPULATING", "AllInfos: " + info);
 
         }
-
+        Log.i("POPULATING", "2");
 
         ListView weathersList = (ListView) findViewById(R.id.forecastListView);
 
-
-        weathersList.setAdapter(new CustomListItemAdapter(MainActivity.getAppContext(), WeatherInfo.convertListWeatherToListCLI(Session.weekInfo, false, false)));
+        Log.i("POPULATING", "3");
+        weathersList.setAdapter(new CustomListItemAdapter(MainActivity.getAppContext(), WeatherInfo.convertListWeatherToListCLI(weatherInfos, false, false)));
+        Log.i("POPULATING", "4");
         Log.i("POPULATING", "Adapter is set");
 
         try {
+            Log.i("POPULATING", "5");
             weathersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Session.currentSelectedInfo = Session.weekInfo.get(position);
+                    Session.currentSelectedInfo = weatherInfos.get(position);
                     startActivity(new Intent(parent.getContext(), DetailActivity.class));
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        Log.i("POPULATING", "6");
 
     }
 
@@ -239,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        AsyncTask<Object, Void, WeatherInfo> task = new AsyncTask<Object, Void, WeatherInfo>() {
+        AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
 //            ProgressBar bar = findViewById(R.id.mainProgressBar);
 
             private Coord coord;
@@ -251,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
 
             @Override
-            protected WeatherInfo doInBackground(Object[] params) {
+            protected Object[] doInBackground(Object[] params) {
 
 //                MainActivity.this.runOnUiThread(new Runnable() {
 //                    @Override
@@ -265,22 +256,34 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 //                    }
 //                });
 
-
-                return fetchWeatherDetails(coord);
+                Object[] obj = new Object[2];
+                obj[0] = fetchWeatherDetails(coord);
+                obj[1] = fetchWeekInfo(coord);
+                return obj;
 
             }
 
 
             @Override
-            protected void onPostExecute(WeatherInfo weatherInfo) {
-                super.onPostExecute(weatherInfo);
-                formatWeatherDetail(weatherInfo);
-                //populateWeekList();
+            protected void onPostExecute(Object[] obj) {
+                super.onPostExecute(obj);
+                formatWeatherDetail((WeatherInfo)obj[0]);
+                populateWeekList((ArrayList<WeatherInfo>)obj[1]);
 //                bar.setVisibility(GONE);
                 swipeContainer.setRefreshing(false);
             }
         };
 
         task.execute();
+    }
+
+    private ArrayList<WeatherInfo> fetchWeekInfo(Coord coord) {
+        if (coord.equals(new Coord(1000, 1000))) {
+            Log.i("Coordinate", "TRUE  " + coord.toString());
+            return null;
+        } else {
+            Log.i("Coordinate", "FALSE " + coord.toString());
+            return WeatherDecoder.getNextWeekInfo(coord);
+        }
     }
 }
