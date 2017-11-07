@@ -108,6 +108,12 @@ public class WeatherInfo {
         this.time = time;
     }
 
+    public String getDay(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(this.getTime());
+        return Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue() +" ";
+    }
+
     public static ArrayList<CustomListItem> convertListWeatherToListCLI(ArrayList<WeatherInfo> infos, boolean cityname, boolean humidity) {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
@@ -134,11 +140,11 @@ public class WeatherInfo {
 
 
 
-if(humidity){
+    if(humidity){
 
     items.add(new CustomListItem(title+" ", info.getHumidity()+"%", info.getTime()));
 
-}else {
+    }else {
     String temperature;
     if (fahrenheit) {
         temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";

@@ -25,6 +25,7 @@ import com.example.android.routetesting.decoders.WeatherDecoder;
 import com.example.android.routetesting.generators.MenuItemGenerator;
 import com.example.android.routetesting.listeners.CustomDrawerClickListener;
 import com.example.android.routetesting.models.Coord;
+import com.example.android.routetesting.models.CustomListItem;
 import com.example.android.routetesting.models.Helper;
 import com.example.android.routetesting.models.WeatherInfo;
 
@@ -96,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         ListView weathersList = (ListView) findViewById(R.id.forecastListView);
 
         Log.i("POPULATING", "3");
-        weathersList.setAdapter(new CustomListItemAdapter(MainActivity.getAppContext(), WeatherInfo.convertListWeatherToListCLI(weatherInfos, false, false)));
+        final ArrayList<CustomListItem> customListItems = WeatherInfo.convertListWeatherToListCLI(weatherInfos, false, false);
+
+        weathersList.setAdapter(new CustomListItemAdapter(MainActivity.getAppContext(), customListItems));
         Log.i("POPULATING", "4");
         Log.i("POPULATING", "Adapter is set");
 
@@ -106,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Session.currentSelectedInfo = weatherInfos.get(position);
+                    Session.selectedDay = weatherInfos.get(position).getDay();
+
                     startActivity(new Intent(parent.getContext(), DetailActivity.class));
                 }
             });

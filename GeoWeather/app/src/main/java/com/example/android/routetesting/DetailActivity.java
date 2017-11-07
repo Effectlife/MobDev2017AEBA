@@ -20,12 +20,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-
-
-
-
-
-
         Log.i("FORMATTING", "WeatherDetail");
 
         WeatherInfo info = Session.currentSelectedInfo;
@@ -72,7 +66,8 @@ public class DetailActivity extends AppCompatActivity {
         statusImage.setImageResource(iconResId);
 
 
-        dayTv.setVisibility(GONE);
+
+        dayTv.setText((Session.selectedDay));
         tempTv.setText((temperature != null ? temperature : "NoTempFound") + "");
         lowTempTv.setText((minTemp != null ? minTemp : "NoTempFound") + "");
         highTempTv.setText((maxTemp != null ? maxTemp : "NoTempFound") + "");
