@@ -14,19 +14,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".RouteOnWeatherActivity" />
-        <activity android:name=".AboutActivity"></activity>
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".DetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".RouteOnWeatherActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".AboutActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

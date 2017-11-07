@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     }
 
-
     private void setupFirstView() {
         ListView drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new CustomMenuItemAdapter(getApplicationContext(), MenuItemGenerator.generate()));
@@ -73,16 +72,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     }
 
-
     private boolean getNotificationGPS() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         return sharedPrefs.getBoolean("pref_notificationGPS", false);
     }
-
-
-
-
 
     public void populateWeekList(final ArrayList<WeatherInfo> weatherInfos) {
         Log.i("POPULATING", "1");
