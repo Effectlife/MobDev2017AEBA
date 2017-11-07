@@ -44,28 +44,35 @@ public abstract class WeatherDecoder {
         }
 
         Document apiResult = null;
-
-        try {
-            apiResult = new AsyncTask<Object, Void, Document>() {
-                @Override
-                protected Document doInBackground(Object... objects) {
-                    //Log.d("MOREWEATHER", "doInBackground");
+        Log.i("BEFORE", "before");
 
 
-                    Document temp = ApiDocumentBuilder.decode(ApiUrl.METNO, coord.getLat(), coord.getLon());
-                    if (temp == null) {
-                        Log.i("DOCUMENT", "NULL");
-                        return null;
-                    }
-                    Log.i("DOCUMENT", Helper.getStringFromDocument(temp));
-                    return temp;
+        apiResult = ApiDocumentBuilder.decode(ApiUrl.METNO, coord.getLat(), coord.getLon());
+        Log.i("DOCUMENT", Helper.getStringFromDocument(apiResult));
 
-                }
-            }.execute(coord, dates.get(0)).get();
 
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+
+//        try {
+//            apiResult = new AsyncTask<Object, Void, Document>() {
+//                @Override
+//                protected Document doInBackground(Object... objects) {
+//                    //Log.d("MOREWEATHER", "doInBackground");
+//
+//
+//                    Document temp = ApiDocumentBuilder.decode(ApiUrl.METNO, coord.getLat(), coord.getLon());
+//                    if (temp == null) {
+//                        Log.i("DOCUMENT", "NULL");
+//                        return null;
+//                    }
+//                    Log.i("DOCUMENT", Helper.getStringFromDocument(temp));
+//                    return temp;
+//
+//                }
+//            }.execute(coord, dates.get(0)).get();
+//
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
 
 
         if (apiResult == null) {

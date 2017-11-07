@@ -37,7 +37,7 @@ import java.util.Calendar;
 
 import static android.view.View.GONE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
 
     //WeatherIcons come from
@@ -59,21 +59,12 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.context = getApplicationContext();
 
 
-
         setContentView(R.layout.activity_main);
         setupFirstView();
 
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.content_frame);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                update();
-                if(swipeContainer.isRefreshing())
-                    swipeContainer.setRefreshing(false);
-            }
-
-        });
-
+        swipeContainer.setOnRefreshListener(this);
+        onRefresh();
 
     }
 
@@ -82,53 +73,6 @@ public class MainActivity extends AppCompatActivity {
         ListView drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new CustomMenuItemAdapter(getApplicationContext(), MenuItemGenerator.generate()));
         drawerList.setOnItemClickListener(new CustomDrawerClickListener());
-
-        update();
-
-    }
-
-    private void update() {
-
-        AsyncTask task = new AsyncTask() {
-//            ProgressBar bar = findViewById(R.id.mainProgressBar);
-
-
-            @Override
-            protected void onPreExecute() {
-//                bar.setVisibility(View.VISIBLE);
-                super.onPreExecute();
-            }
-
-            @Override
-            protected Object doInBackground(Object[] params) {
-
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(MainActivity.this, getNotificationGPS()), Calendar.getInstance().getTime());
-
-                        addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
-
-                        formatWeatherDetail();
-                        populateWeekList();
-                    }
-                });
-
-
-                return null;
-
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-//                bar.setVisibility(GONE);
-                super.onPostExecute(o);
-            }
-        };
-
-        task.execute();
-
 
     }
 
@@ -144,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("POPULATING", "WeekList");
 
 
-        Coord locinfo = loadLocationInfo(new Activity(), false);
+        Coord locinfo = loadLocationInfo(false);
         if (locinfo.equals(new Coord(1000, 1000))) {
             Log.i("Coordinate", "TRUE  " + locinfo.toString());
             return;
@@ -175,19 +119,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
 
 
     }
 
 
-    private void formatWeatherDetail() {
-
-
+    private WeatherInfo fetchWeatherDetails(Coord coord) {
         Log.i("FORMATTING", "WeatherDetail");
         WeatherInfo info;
-        Coord coord = loadLocationInfo(this, false);
+
         if (coord.equals(new Coord(1000, 1000))) {
 
             info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
@@ -199,6 +141,14 @@ public class MainActivity extends AppCompatActivity {
             Log.i("FORMATDETAIL", "info == null, Creating default weather");
             info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
         }
+
+        return info;
+
+    }
+
+    private void formatWeatherDetail(WeatherInfo info) {
+
+
         Log.i("FORMATDETAIL", info.toString());
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
         boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
@@ -264,10 +214,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //TODO: fix geolocation
-    public static Coord loadLocationInfo(Activity activity, boolean gpsOverride) {
+    public static Coord loadLocationInfo(boolean gpsOverride) {
         String location = getPrefLocation();
         if (location.equals("GPS") || gpsOverride) {
-            GPSTracker tracker = new GPSTracker(getAppContext(), activity);
+            GPSTracker tracker = new GPSTracker(getAppContext(), new Activity());
             return new Coord(tracker.getLatitude(), tracker.getLongitude());
         }
 
@@ -287,4 +237,50 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRefresh() {
+        AsyncTask<Object, Void, WeatherInfo> task = new AsyncTask<Object, Void, WeatherInfo>() {
+//            ProgressBar bar = findViewById(R.id.mainProgressBar);
+
+            private Coord coord;
+
+            @Override
+            protected void onPreExecute() {
+                coord = loadLocationInfo(false);
+                swipeContainer.setRefreshing(true);
+            }
+
+            @Override
+            protected WeatherInfo doInBackground(Object[] params) {
+
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(MainActivity.this, getNotificationGPS()), Calendar.getInstance().getTime());
+//
+//                        addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
+//
+//
+//                    }
+//                });
+
+
+                return fetchWeatherDetails(coord);
+
+            }
+
+
+            @Override
+            protected void onPostExecute(WeatherInfo weatherInfo) {
+                super.onPostExecute(weatherInfo);
+                formatWeatherDetail(weatherInfo);
+                //populateWeekList();
+//                bar.setVisibility(GONE);
+                swipeContainer.setRefreshing(false);
+            }
+        };
+
+        task.execute();
+    }
 }
