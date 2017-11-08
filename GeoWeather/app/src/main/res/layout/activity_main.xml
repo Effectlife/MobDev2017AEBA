@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- The main content view -->
+
     <LinearLayout
         android:layout_width="match_parent"
 
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
             <FrameLayout
                 android:id="@+id/weather_detail_container"
@@ -23,10 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-
-
     </LinearLayout>
-
     <!-- The navigation drawer -->
     <ListView
         android:id="@+id/left_drawer"

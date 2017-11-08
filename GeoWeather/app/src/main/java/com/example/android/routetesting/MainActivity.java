@@ -1,5 +1,6 @@
 package com.example.android.routetesting;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.routetesting.adapters.CustomListItemAdapter;
 import com.example.android.routetesting.adapters.CustomMenuItemAdapter;
@@ -37,15 +39,16 @@ import java.util.Calendar;
 
 import static android.view.View.GONE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
 
     //WeatherIcons come from
     //https://vclouds.deviantart.com/art/VClouds-Weather-Icons-179152045
 
     private static Context context;
-    private SwipeRefreshLayout swipeContainer;
-
+    FragmentManager fragmentManager;
+    WeekForecastFragment weekForecastFragment;
+    WeatherDetailFragment weatherDetailFragment;
     public static Context getAppContext() {
         return MainActivity.context;
     }
@@ -56,15 +59,16 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.context = getApplicationContext();
 
 
+
         setContentView(R.layout.activity_main);
 
         WeekForecastFragment weekForecastFragment = new WeekForecastFragment();
         WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                        .add(R.id.week_forecast_container,weekForecastFragment)
-                        .add(R.id.weather_detail_container,weatherDetailFragment)
+                        .add(R.id.week_forecast_container,weekForecastFragment,"1f")
+                        .add(R.id.weather_detail_container,weatherDetailFragment,"2f")
                         .commit();
 
         setupFirstView();
@@ -77,5 +81,6 @@ public class MainActivity extends AppCompatActivity {
         drawerList.setAdapter(new CustomMenuItemAdapter(getApplicationContext(), MenuItemGenerator.generate()));
         drawerList.setOnItemClickListener(new CustomDrawerClickListener());
     }
+
 
 }

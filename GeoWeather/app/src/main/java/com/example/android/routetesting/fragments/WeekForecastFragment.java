@@ -54,6 +54,10 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_week_forecast, container, false);
 
+
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.week_swipe);
+        swipeContainer.setOnRefreshListener(this);
+
         onRefresh();
 
         return rootView;
@@ -118,38 +122,23 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
             @Override
             protected void onPreExecute() {
                 coord = loadLocationInfo(false);
-                //swipeContainer.setRefreshing(true);
+                swipeContainer.setRefreshing(true);
             }
 
             @Override
             protected Object[] doInBackground(Object[] params) {
 
-//                MainActivity.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(MainActivity.this, getNotificationGPS()), Calendar.getInstance().getTime());
-//
-//                        addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
-//
-//
-//                    }
-//                });
-
                 Object[] obj = new Object[2];
                 obj[0] = fetchWeatherDetails(coord);
                 obj[1] = fetchWeekInfo(coord);
                 return obj;
-
             }
-
 
             @Override
             protected void onPostExecute(Object[] obj) {
                 super.onPostExecute(obj);
                 populateWeekList((ArrayList<WeatherInfo>)obj[1]);
-//                bar.setVisibility(GONE);
-                //swipeContainer.setRefreshing(false);
+                swipeContainer.setRefreshing(false);
             }
         };
 
