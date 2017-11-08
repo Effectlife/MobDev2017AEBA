@@ -23,6 +23,7 @@ import com.example.android.routetesting.adapters.CustomListItemAdapter;
 import com.example.android.routetesting.adapters.CustomMenuItemAdapter;
 import com.example.android.routetesting.decoders.RouteDecoder;
 import com.example.android.routetesting.decoders.WeatherDecoder;
+import com.example.android.routetesting.fragments.WeatherDetailFragment;
 import com.example.android.routetesting.fragments.WeekForecastFragment;
 import com.example.android.routetesting.generators.MenuItemGenerator;
 import com.example.android.routetesting.listeners.CustomDrawerClickListener;
@@ -58,9 +59,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         WeekForecastFragment weekForecastFragment = new WeekForecastFragment();
+        WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                         .add(R.id.week_forecast_container,weekForecastFragment)
+                        .add(R.id.weather_detail_container,weatherDetailFragment)
                         .commit();
 
         setupFirstView();

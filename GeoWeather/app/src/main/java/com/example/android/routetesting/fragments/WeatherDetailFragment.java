@@ -1,7 +1,6 @@
 package com.example.android.routetesting.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,21 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.android.routetesting.DetailActivity;
 import com.example.android.routetesting.GPSTracker;
 import com.example.android.routetesting.MainActivity;
 import com.example.android.routetesting.R;
-import com.example.android.routetesting.Session;
-import com.example.android.routetesting.adapters.CustomListItemAdapter;
 import com.example.android.routetesting.decoders.RouteDecoder;
 import com.example.android.routetesting.decoders.WeatherDecoder;
 import com.example.android.routetesting.models.Coord;
-import com.example.android.routetesting.models.CustomListItem;
 import com.example.android.routetesting.models.Helper;
 import com.example.android.routetesting.models.WeatherInfo;
 
@@ -41,25 +34,24 @@ import static com.example.android.routetesting.MainActivity.getAppContext;
  * Created by 11500399 on 08-Nov-17.
  */
 
-
-public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private SwipeRefreshLayout swipeContainer;
-    public WeekForecastFragment() {
+    private View rootView;
+
+    public WeatherDetailFragment() {
 
     }
 
-    View rootView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_week_forecast, container, false);
+
+        rootView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
 
         onRefresh();
-
         return rootView;
-
-        //return super.onCreateView(inflater, container, savedInstanceState);
     }
+
     private static String getPrefLocation() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
@@ -98,14 +90,60 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
 
     }
 
-    private ArrayList<WeatherInfo> fetchWeekInfo(Coord coord) {
-        if (coord.equals(new Coord(1000, 1000))) {
-            Log.i("Coordinate", "TRUE  " + coord.toString());
-            return null;
-        } else {
-            Log.i("Coordinate", "FALSE " + coord.toString());
-            return WeatherDecoder.getNextWeekInfo(coord);
+    private void formatWeatherDetail(WeatherInfo info) {
+
+
+        Log.i("FORMATDETAIL", info.toString());
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
+        boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
+        String temperature = null;
+        String maxTemp = null;
+        String minTemp = null;
+
+
+        try {
+            if (fahrenheit) {
+                temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";
+                minTemp = Helper.celsiusToFahrenheit(info.getMinTemp()) + " °F";
+                maxTemp = Helper.celsiusToFahrenheit(info.getMaxTemp()) + " °F";
+            } else {
+                temperature = info.getTemperature() + " °C";
+                minTemp = info.getMinTemp() + " °C";
+                maxTemp = info.getMaxTemp() + " °C";
+            }
+        } catch (
+                Exception e) {
         }
+
+
+        TextView dayTv = (TextView) rootView.findViewById(R.id.weatherDetailDay2);
+        TextView tempTv = (TextView) rootView.findViewById(R.id.weatherDetailTemp2);
+        TextView cityTv = (TextView) rootView.findViewById(R.id.weatherDetailCity2);
+        ImageView statusImage = (ImageView) rootView.findViewById(R.id.weatherDetailStatusImage2);
+        TextView humidityTv = (TextView) rootView.findViewById(R.id.weatherDetailHumiditySmall2);
+        TextView lowTempTv = (TextView) rootView.findViewById(R.id.weatherDetailTempLowSmall2);
+        TextView highTempTv = (TextView) rootView.findViewById(R.id.weatherDetailTempHighSmall2);
+        TextView windTv = (TextView) rootView.findViewById(R.id.weatherDetailWindSmall2);
+
+        dayTv.setVisibility(GONE);
+        tempTv.setText((temperature != null ? temperature : "NoTempFound") + "");
+        lowTempTv.setText((minTemp != null ? minTemp : "NoTempFound") + "");
+        highTempTv.setText((maxTemp != null ? maxTemp : "NoTempFound") + "");
+
+
+//        int iconResId = getResources().getIdentifier("weathericon" + info.getSymbol(), "drawable", getPackageName());
+//        Log.i("IMGSYMBOL", iconResId + " " + info.getSymbol());
+//
+//        if (iconResId == 0) {
+//            iconResId = getResources().getIdentifier("na", "drawable", getPackageName());
+//        }
+
+        //statusImage.setImageResource(iconResId);
+
+
+        cityTv.setText(info != null ? info.getLocation().getCityName() : "NoCityFound");
+        humidityTv.setText((info != null ? info.getHumidity() : "NoHumidityFound") + "");
+        windTv.setText((info != null ? info.getWindspeed() : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
     }
 
     @Override
@@ -124,73 +162,20 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
             @Override
             protected Object[] doInBackground(Object[] params) {
 
-//                MainActivity.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        WeatherInfo currentWeatherGPS = WeatherDecoder.getSingleWeatherFromApi(loadLocationInfo(MainActivity.this, getNotificationGPS()), Calendar.getInstance().getTime());
-//
-//                        addNotification(currentWeatherGPS.getTemperature(), currentWeatherGPS.getLocation().getCityName());
-//
-//
-//                    }
-//                });
-
                 Object[] obj = new Object[2];
                 obj[0] = fetchWeatherDetails(coord);
-                obj[1] = fetchWeekInfo(coord);
+
                 return obj;
-
             }
-
-
             @Override
             protected void onPostExecute(Object[] obj) {
                 super.onPostExecute(obj);
-                populateWeekList((ArrayList<WeatherInfo>)obj[1]);
+                formatWeatherDetail((WeatherInfo)obj[0]);
 //                bar.setVisibility(GONE);
                 //swipeContainer.setRefreshing(false);
             }
         };
 
         task.execute();
-    }
-
-
-    public void populateWeekList(final ArrayList<WeatherInfo> weatherInfos) {
-        Log.i("POPULATING", "1");
-
-
-        for (WeatherInfo info : weatherInfos) {
-            Log.i("POPULATING", "AllInfos: " + info);
-
-        }
-        Log.i("POPULATING", "2");
-
-        ListView weathersList = (ListView) rootView.findViewById(R.id.week_forecast_list_view);
-
-        Log.i("POPULATING", "3");
-        final ArrayList<CustomListItem> customListItems = WeatherInfo.convertListWeatherToListCLI(weatherInfos, false, false);
-
-        weathersList.setAdapter(new CustomListItemAdapter(getAppContext(), customListItems));
-        Log.i("POPULATING", "4");
-        Log.i("POPULATING", "Adapter is set");
-
-        try {
-            Log.i("POPULATING", "5");
-            weathersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Session.currentSelectedInfo = weatherInfos.get(position);
-                    Session.selectedDay = weatherInfos.get(position).getDay();
-
-                    startActivity(new Intent(parent.getContext(), DetailActivity.class));
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.i("POPULATING", "6");
-
     }
 }
