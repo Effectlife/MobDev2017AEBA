@@ -56,7 +56,7 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         String pref = sharedPrefs.getString("pref_location", "DEFAULT");
-        Log.e("PREFPREF", "pref: " + pref);
+        Log.e("DetailPREFPREF", "pref: " + pref);
         return pref;
     }
 

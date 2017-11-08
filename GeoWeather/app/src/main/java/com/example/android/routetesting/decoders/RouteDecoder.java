@@ -26,6 +26,7 @@ public abstract class RouteDecoder {
 
         Coord coord = null;
 
+
         try {
             coord = new AsyncTask<Object, Void, Coord>() {
 
@@ -35,18 +36,18 @@ public abstract class RouteDecoder {
                     Document doc = ApiDocumentBuilder.decode(ApiUrl.GOOGLELOC, location);
                     Log.e("GEOLOC", Helper.getStringFromDocument(doc));
 
-                    if(doc.getElementsByTagName("status").item(0).getTextContent().equals("ZERO_RESULTS")){
-                        return new Coord(1000,1000); //returns an normally invalid coordinate to inform the caller the location was not found
+                    if (doc.getElementsByTagName("status").item(0).getTextContent().equals("ZERO_RESULTS")) {
+                        return new Coord(1000, 1000); //returns an normally invalid coordinate to inform the caller the location was not found
                     }
 
                     NodeList lats = doc.getElementsByTagName("lat");
                     NodeList lons = doc.getElementsByTagName("lng");
 
-                    for(int i = 0; i < lats.getLength(); i++){
-                        try{
-                            Log.e("MIEP"+i, lats.item(i).getTextContent()+","+lons.item(i).getTextContent());
-                        }catch (Exception e){
-                            Log.e("MIEP"+i, "Error");
+                    for (int i = 0; i < lats.getLength(); i++) {
+                        try {
+                            Log.e("MIEP" + i, lats.item(i).getTextContent() + "," + lons.item(i).getTextContent());
+                        } catch (Exception e) {
+                            Log.e("MIEP" + i, "Error");
                         }
                     }
 

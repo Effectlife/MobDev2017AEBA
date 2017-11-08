@@ -138,8 +138,6 @@ public class WeatherInfo {
                 }
             }
 
-
-
     if(humidity){
 
     items.add(new CustomListItem(title+" ", info.getHumidity()+"%", info.getTime()));
@@ -152,7 +150,8 @@ public class WeatherInfo {
         temperature = info.getTemperature() + " °C";
     }
     items.add(new CustomListItem(title+" ", temperature, info.getTime()));
-}
+    items.add(new CustomListItem(title+" ", temperature, info.getTime()));
+    }
 
         }
         return items;

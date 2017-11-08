@@ -68,17 +68,18 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         String pref = sharedPrefs.getString("pref_location", "DEFAULT");
-        Log.e("PREFPREF", "pref: " + pref);
+        Log.e("WeekPREFPREF", "pref: " + pref);
         return pref;
     }
 
     public static Coord loadLocationInfo(boolean gpsOverride) {
         String location = getPrefLocation();
+        Log.i("WEEKFORECAST", location);
         if (location.equals("GPS") || gpsOverride) {
             GPSTracker tracker = new GPSTracker(getAppContext(), new Activity());
             return new Coord(tracker.getLatitude(), tracker.getLongitude());
         }
-
+        Log.i("WEEKFORECAST", "starting RouteDecoder.Geolocator");
         return RouteDecoder.geoLocator(location);
     }
 

@@ -39,7 +39,7 @@ import java.util.Calendar;
 
 import static android.view.View.GONE;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
 
     //WeatherIcons come from
@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity{
     FragmentManager fragmentManager;
     WeekForecastFragment weekForecastFragment;
     WeatherDetailFragment weatherDetailFragment;
+    SwipeRefreshLayout swipeContainer;
+
     public static Context getAppContext() {
         return MainActivity.context;
     }
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity{
         MainActivity.context = getApplicationContext();
 
 
-
         setContentView(R.layout.activity_main);
 
         WeekForecastFragment weekForecastFragment = new WeekForecastFragment();
@@ -67,9 +68,11 @@ public class MainActivity extends AppCompatActivity{
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                        .add(R.id.week_forecast_container,weekForecastFragment,"1f")
-                        .add(R.id.weather_detail_container,weatherDetailFragment,"2f")
-                        .commit();
+                .add(R.id.week_forecast_container, weekForecastFragment, "1f")
+                .add(R.id.weather_detail_container, weatherDetailFragment, "2f")
+                .commit();
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.main_swipe_layout);
+        swipeContainer.setOnRefreshListener(this);
 
         setupFirstView();
 
@@ -82,5 +85,39 @@ public class MainActivity extends AppCompatActivity{
         drawerList.setOnItemClickListener(new CustomDrawerClickListener());
     }
 
+
+
+    @Override
+    public void onRefresh() {
+        AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
+//            ProgressBar bar = findViewById(R.id.mainProgressBar);
+
+            private Coord coord;
+
+            @Override
+            protected void onPreExecute() {
+
+                swipeContainer.setRefreshing(true);
+            }
+
+            @Override
+            protected Object[] doInBackground(Object[] params) {
+                WeekForecastFragment wfm = (WeekForecastFragment) getSupportFragmentManager().findFragmentByTag("1f");
+                wfm.onRefresh();
+                WeatherDetailFragment wdfm = (WeatherDetailFragment) getSupportFragmentManager()
+                        .findFragmentByTag("2f");
+                wdfm.onRefresh();
+
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Object[] obj) {
+                super.onPostExecute(obj);
+                swipeContainer.setRefreshing(false);
+            }
+        };
+
+        task.execute();
+    }
 
 }
