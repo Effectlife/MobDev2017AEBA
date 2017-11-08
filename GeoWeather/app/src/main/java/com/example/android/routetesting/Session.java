@@ -15,4 +15,5 @@ public abstract class Session {
     public static WeatherInfo currentSelectedInfo;
     public static ArrayList<WeatherInfo> routeInfo;
     public static String selectedDay;
+    public static int detailScreen;
 }

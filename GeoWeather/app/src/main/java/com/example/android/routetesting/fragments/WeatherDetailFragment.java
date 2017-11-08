@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.example.android.routetesting.GPSTracker;
 import com.example.android.routetesting.MainActivity;
 import com.example.android.routetesting.R;
+import com.example.android.routetesting.Session;
 import com.example.android.routetesting.decoders.RouteDecoder;
 import com.example.android.routetesting.decoders.WeatherDecoder;
 import com.example.android.routetesting.models.Coord;
@@ -91,19 +92,21 @@ onRefresh();
 
     private WeatherInfo fetchWeatherDetails(Coord coord) {
         Log.i("FORMATTING", "WeatherDetail");
-        WeatherInfo info;
+        WeatherInfo info = Session.currentSelectedInfo;
+        if(info == null){
+            if (coord.equals(new Coord(1000, 1000))) {
 
-        if (coord.equals(new Coord(1000, 1000))) {
+                info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
 
-            info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
-
-        } else {
-            info = WeatherDecoder.getSingleWeatherFromApi(coord, Calendar.getInstance().getTime());
+            } else {
+                info = WeatherDecoder.getSingleWeatherFromApi(coord, Calendar.getInstance().getTime());
+            }
+            if (info == null) {
+                Log.i("FORMATDETAIL", "info == null, Creating default weather");
+                info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
+            }
         }
-        if (info == null) {
-            Log.i("FORMATDETAIL", "info == null, Creating default weather");
-            info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
-        }
+
 
         return info;
 
@@ -144,7 +147,7 @@ onRefresh();
         TextView highTempTv = (TextView) rootView.findViewById(R.id.weatherDetailTempHighSmall2);
         TextView windTv = (TextView) rootView.findViewById(R.id.weatherDetailWindSmall2);
 
-        dayTv.setVisibility(GONE);
+        dayTv.setText(Session.selectedDay);
         tempTv.setText((temperature != null ? temperature : "NoTempFound") + "");
         lowTempTv.setText((minTemp != null ? minTemp : "NoTempFound") + "");
         highTempTv.setText((maxTemp != null ? maxTemp : "NoTempFound") + "");
@@ -212,8 +215,11 @@ onRefresh();
                 coord = loadLocationInfo(false);
 
                 notificationCoord = loadLocationInfo(getNotificationGPS());
-                WeekForecastFragment wfm = (WeekForecastFragment) myContext.getSupportFragmentManager().findFragmentByTag("wfd");
-                wfm.onRefresh();
+                WeekForecastFragment wfm;
+                if(Session.detailScreen == 0){
+                    wfm = (WeekForecastFragment) myContext.getSupportFragmentManager().findFragmentByTag("wfd");
+                    wfm.onRefresh();
+                }
                 Log.i("WDF", "preexec-done");
             }
 
@@ -227,9 +233,6 @@ Log.i("WDF", "doing in background");
                 Log.i("WDF", "fetched weatherdetails: "+obj[0]);
                 currentWeatherGPS[0] = WeatherDecoder.getSingleWeatherFromApi(notificationCoord, Calendar.getInstance().getTime());
                 Log.i("WDF", "fetched weatherinfoGPS" + currentWeatherGPS[0]);
-
-
-
 
                 return obj;
             }

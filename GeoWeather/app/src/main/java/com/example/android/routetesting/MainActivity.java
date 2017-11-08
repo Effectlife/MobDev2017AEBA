@@ -60,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_main);
-
+        Session.detailScreen = 0;
         WeekForecastFragment weekForecastFragment = new WeekForecastFragment();
         WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
-
+        Session.currentSelectedInfo = null;
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.week_forecast_container, weekForecastFragment, "wfd")
