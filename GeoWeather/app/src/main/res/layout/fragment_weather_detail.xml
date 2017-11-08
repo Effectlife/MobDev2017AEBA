@@ -1,125 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wdfRefresh"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5sp"
-    android:orientation="vertical">
+    android:layout_marginBottom="5sp">
 
-    <TextView
-        android:id="@+id/weatherDetailDay2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="DAY"
-        android:textSize="25sp"
-
-        />
-
-    <TextView
-        android:id="@+id/weatherDetailTemp2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="TEMP"
-        android:textSize="30sp" />
-
-    <TextView
-        android:id="@+id/weatherDetailCity2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="CITY"
-        android:textSize="25sp" />
-
-    <ImageView
-        android:id="@+id/weatherDetailStatusImage2"
-        android:layout_width="match_parent"
-        android:layout_height="125sp"
-        android:contentDescription="@string/weathertypeimage"
-        android:src="@drawable/raining" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5sp"
-        android:gravity="center">
+        android:layout_height="50dp"
+
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/weatherDetailDay2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="DAY"
+            android:textSize="25sp"
+
+            />
+
+        <TextView
+            android:id="@+id/weatherDetailTemp2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="TEMP"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/weatherDetailCity2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="CITY"
+            android:textSize="25sp" />
 
         <ImageView
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:layout_weight="8"
-            android:contentDescription="@string/humidityicon"
-            android:src="@drawable/drop" />
+            android:id="@+id/weatherDetailStatusImage2"
+            android:layout_width="match_parent"
+            android:layout_height="125sp"
+            android:contentDescription="@string/weathertypeimage"
+            android:src="@drawable/raining" />
 
-        <ImageView
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:layout_weight="8"
-            android:contentDescription="@string/temperatureicon"
-            android:src="@drawable/temp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:gravity="center">
 
-        <ImageView
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:layout_weight="8"
-            android:contentDescription="@string/windicon"
-            android:src="@drawable/wind" />
+            <ImageView
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_weight="8"
+                android:contentDescription="@string/humidityicon"
+                android:src="@drawable/drop" />
+
+            <ImageView
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_weight="8"
+                android:contentDescription="@string/temperatureicon"
+                android:src="@drawable/temp" />
+
+            <ImageView
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_weight="8"
+                android:contentDescription="@string/windicon"
+                android:src="@drawable/wind" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="38sp"
+            android:layout_marginRight="38sp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/weatherDetailHumiditySmall2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="tmp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="|" />
+
+            <TextView
+                android:id="@+id/weatherDetailTempHighSmall2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="tmp" />
+
+            <TextView
+                android:id="@+id/weatherDetailTempLowSmall2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="tmp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="|" />
+
+            <TextView
+                android:id="@+id/weatherDetailWindSmall2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="tmp" />
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="38sp"
-        android:layout_marginRight="38sp"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/weatherDetailHumiditySmall2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="tmp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="|" />
-
-        <TextView
-            android:id="@+id/weatherDetailTempHighSmall2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="tmp" />
-
-        <TextView
-            android:id="@+id/weatherDetailTempLowSmall2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="tmp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="|" />
-
-        <TextView
-            android:id="@+id/weatherDetailWindSmall2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:text="tmp" />
-
-
-    </LinearLayout>
-</LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>

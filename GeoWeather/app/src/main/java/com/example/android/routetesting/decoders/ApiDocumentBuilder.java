@@ -4,6 +4,7 @@ package com.example.android.routetesting.decoders;
 import android.util.Log;
 
 import com.example.android.routetesting.lookups.ApiUrl;
+import com.example.android.routetesting.models.Helper;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -62,7 +63,7 @@ public abstract class ApiDocumentBuilder {
             URLConnection connection = link.openConnection();
             InputStream source = connection.getInputStream();
             Document parsed = dBuilder.parse(source);
-            //Log.e("PRINTED_XML", getStringFromDocument(parsed));
+            Log.e("PRINTED_XML", Helper.getStringFromDocument(parsed));
             return parsed;
 
 

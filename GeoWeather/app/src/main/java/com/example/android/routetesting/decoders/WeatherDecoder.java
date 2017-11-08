@@ -48,7 +48,7 @@ public abstract class WeatherDecoder {
 
 
         apiResult = ApiDocumentBuilder.decode(ApiUrl.METNO, coord.getLat(), coord.getLon());
-        Log.i("DOCUMENT", Helper.getStringFromDocument(apiResult));
+        //Log.i("DOCUMENT", Helper.getStringFromDocument(apiResult));
 
 
 

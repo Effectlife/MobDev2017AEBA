@@ -34,7 +34,7 @@ public abstract class RouteDecoder {
                 protected Coord doInBackground(Object... params) {
 
                     Document doc = ApiDocumentBuilder.decode(ApiUrl.GOOGLELOC, location);
-                    Log.e("GEOLOC", Helper.getStringFromDocument(doc));
+                    //Log.e("GEOLOC", Helper.getStringFromDocument(doc));
 
                     if (doc.getElementsByTagName("status").item(0).getTextContent().equals("ZERO_RESULTS")) {
                         return new Coord(1000, 1000); //returns an normally invalid coordinate to inform the caller the location was not found
@@ -74,7 +74,7 @@ public abstract class RouteDecoder {
                     //Log.d("ROUTEDECODER","Starting Decode");
                     Document directions = ApiDocumentBuilder.decode(ApiUrl.GOOGLEDIR, (String) firstAddress, (String) secondAddress);
                     //Log.d("ROUTEDECODER","Finished Decode");
-                    Log.e("STEPS", Helper.getStringFromDocument(directions));
+                    //Log.e("STEPS", Helper.getStringFromDocument(directions));
                     NodeList steps = directions.getElementsByTagName("step");
 
                     ArrayList<Step> allSteps = new ArrayList<Step>();

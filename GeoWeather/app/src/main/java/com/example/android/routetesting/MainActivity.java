@@ -39,7 +39,7 @@ import java.util.Calendar;
 
 import static android.view.View.GONE;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity {
 
 
     //WeatherIcons come from
@@ -47,9 +47,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private static Context context;
     FragmentManager fragmentManager;
-    WeekForecastFragment weekForecastFragment;
-    WeatherDetailFragment weatherDetailFragment;
-    SwipeRefreshLayout swipeContainer;
+    //SwipeRefreshLayout swipeContainer;
 
     public static Context getAppContext() {
         return MainActivity.context;
@@ -68,11 +66,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.week_forecast_container, weekForecastFragment, "1f")
-                .add(R.id.weather_detail_container, weatherDetailFragment, "2f")
+                .add(R.id.week_forecast_container, weekForecastFragment, "wfd")
+                .add(R.id.weather_detail_container, weatherDetailFragment, "wdfd")
                 .commit();
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.main_swipe_layout);
-        swipeContainer.setOnRefreshListener(this);
+
 
         setupFirstView();
 
@@ -87,37 +84,39 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
 
 
-    @Override
-    public void onRefresh() {
-        AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
-//            ProgressBar bar = findViewById(R.id.mainProgressBar);
-
-            private Coord coord;
-
-            @Override
-            protected void onPreExecute() {
-
-                swipeContainer.setRefreshing(true);
-            }
-
-            @Override
-            protected Object[] doInBackground(Object[] params) {
-                WeekForecastFragment wfm = (WeekForecastFragment) getSupportFragmentManager().findFragmentByTag("1f");
-                wfm.onRefresh();
-                WeatherDetailFragment wdfm = (WeatherDetailFragment) getSupportFragmentManager()
-                        .findFragmentByTag("2f");
-                wdfm.onRefresh();
-
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Object[] obj) {
-                super.onPostExecute(obj);
-                swipeContainer.setRefreshing(false);
-            }
-        };
-
-        task.execute();
-    }
+//    public void onRefresh() {
+//        Log.i("MainRefresh", "main");
+//
+//
+//        AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
+////            ProgressBar bar = findViewById(R.id.mainProgressBar);
+//
+//            private Coord coord;
+//
+//            @Override
+//            protected void onPreExecute() {
+//
+//                swipeContainer.setRefreshing(true);
+//            }
+//
+//            @Override
+//            protected Object[] doInBackground(Object[] params) {
+//                WeekForecastFragment wfm = (WeekForecastFragment) getSupportFragmentManager().findFragmentByTag("wfd");
+//                wfm.onRefresh();
+//                WeatherDetailFragment wdfm = (WeatherDetailFragment) getSupportFragmentManager().findFragmentByTag("wdfd");
+//                wdfm.onRefresh();
+//
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Object[] obj) {
+//                super.onPostExecute(obj);
+//                swipeContainer.setRefreshing(false);
+//            }
+//        };
+//
+//        task.execute();
+//    }
 
 }

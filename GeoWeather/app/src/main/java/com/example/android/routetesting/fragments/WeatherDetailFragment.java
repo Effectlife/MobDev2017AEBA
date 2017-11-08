@@ -1,12 +1,16 @@
 package com.example.android.routetesting.fragments;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +42,14 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
     private SwipeRefreshLayout swipeContainer;
     private View rootView;
 
+    private FragmentActivity myContext;
+
+    @Override
+    public void onAttach(Context context) {
+        myContext = (FragmentActivity) context;
+        super.onAttach(context);
+    }
+
     public WeatherDetailFragment() {
 
     }
@@ -47,8 +59,13 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
+        swipeContainer = rootView.findViewById(R.id.wdfRefresh);
+swipeContainer.setOnRefreshListener(this);
 
-        onRefresh();
+onRefresh();
+
+        Log.i("WEATHERDETAILFRAG", "Created rootview and found swipecontainer");
+
         return rootView;
     }
 
@@ -146,24 +163,65 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         windTv.setText((info != null ? info.getWindspeed() : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
     }
 
+    private boolean getNotificationGPS() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
+
+        return sharedPrefs.getBoolean("pref_notificationGPS", false);
+    }
+
+    private void addNotification(float temperature, String locationName) {
+        Log.i("NOTIFICATION", "starting");
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.myContext, "default")
+                .setSmallIcon(R.drawable.main_icon)
+                .setContentTitle("GeoWeather")
+                .setContentText("The temp in " + locationName + " is " + temperature);
+        Log.i("NOTIFICATION", "created builder");
+
+        NotificationManager mManager = (NotificationManager) MainActivity.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        Log.i("NOTIFICATION", "fetched manager");
+        mManager.notify(1, mBuilder.build());
+        Log.i("NOTIFICATION", "build and notified");
+
+    }
+
+
+
     @Override
     public void onRefresh() {
+
+        Log.i("Weatherdetail", "refreshed");
+        final WeatherInfo[] currentWeatherGPS = new WeatherInfo[1];
         AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
 //            ProgressBar bar = findViewById(R.id.mainProgressBar);
 
             private Coord coord;
+            private Coord notificationCoord;
 
             @Override
             protected void onPreExecute() {
+
+                swipeContainer.setRefreshing(true);
                 coord = loadLocationInfo(false);
-                //swipeContainer.setRefreshing(true);
+
+                notificationCoord = loadLocationInfo(getNotificationGPS());
+                WeekForecastFragment wfm = (WeekForecastFragment) myContext.getSupportFragmentManager().findFragmentByTag("wfd");
+                wfm.onRefresh();
+                Log.i("WDF", "preexec-done");
             }
 
             @Override
             protected Object[] doInBackground(Object[] params) {
 
+Log.i("WDF", "doing in background");
+
                 Object[] obj = new Object[2];
                 obj[0] = fetchWeatherDetails(coord);
+                Log.i("WDF", "fetched weatherdetails: "+obj[0]);
+                currentWeatherGPS[0] = WeatherDecoder.getSingleWeatherFromApi(notificationCoord, Calendar.getInstance().getTime());
+                Log.i("WDF", "fetched weatherinfoGPS" + currentWeatherGPS[0]);
+
+
+
 
                 return obj;
             }
@@ -171,8 +229,10 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
             protected void onPostExecute(Object[] obj) {
                 super.onPostExecute(obj);
                 formatWeatherDetail((WeatherInfo)obj[0]);
-//                bar.setVisibility(GONE);
-                //swipeContainer.setRefreshing(false);
+                String cityname = currentWeatherGPS[0].getLocation().getCityName();
+                Log.i("WDF", "recieved cityname "+cityname);
+                addNotification(currentWeatherGPS[0].getTemperature(), cityname);
+                swipeContainer.setRefreshing(false);
             }
         };
 

@@ -42,8 +42,8 @@ import static com.example.android.routetesting.MainActivity.getAppContext;
  */
 
 
-public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private SwipeRefreshLayout swipeContainer;
+public class WeekForecastFragment extends Fragment {
+
     public WeekForecastFragment() {
 
     }
@@ -55,10 +55,8 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
         rootView = inflater.inflate(R.layout.fragment_week_forecast, container, false);
 
 
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.week_swipe);
-        swipeContainer.setOnRefreshListener(this);
 
-        onRefresh();
+
 
         return rootView;
 
@@ -112,9 +110,8 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
             return WeatherDecoder.getNextWeekInfo(coord);
         }
     }
-
-    @Override
     public void onRefresh() {
+        Log.i("Weekforecast", "refreshed");
         AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
 //            ProgressBar bar = findViewById(R.id.mainProgressBar);
 
@@ -122,8 +119,13 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
 
             @Override
             protected void onPreExecute() {
+                Log.i("WFFRAG", "preexec");
+
+
                 coord = loadLocationInfo(false);
-                swipeContainer.setRefreshing(true);
+                Log.i("WFFRAG", "coord: "+coord);
+
+
             }
 
             @Override
@@ -139,7 +141,7 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
             protected void onPostExecute(Object[] obj) {
                 super.onPostExecute(obj);
                 populateWeekList((ArrayList<WeatherInfo>)obj[1]);
-                swipeContainer.setRefreshing(false);
+
             }
         };
 
@@ -163,7 +165,7 @@ public class WeekForecastFragment extends Fragment implements SwipeRefreshLayout
         final ArrayList<CustomListItem> customListItems = WeatherInfo.convertListWeatherToListCLI(weatherInfos, false, false);
 
         weathersList.setAdapter(new CustomListItemAdapter(getAppContext(), customListItems));
-        Log.i("POPULATING", "4");
+        Log.i("POPULATING", "4: items in adapter"+customListItems.size());
         Log.i("POPULATING", "Adapter is set");
 
         try {
