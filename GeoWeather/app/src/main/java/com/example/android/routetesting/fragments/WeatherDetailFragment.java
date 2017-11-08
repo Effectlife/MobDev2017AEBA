@@ -2,7 +2,9 @@ package com.example.android.routetesting.fragments;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -171,10 +173,16 @@ onRefresh();
 
     private void addNotification(float temperature, String locationName) {
         Log.i("NOTIFICATION", "starting");
+
+        Intent intent = new Intent(MainActivity.getAppContext(), MainActivity.class); // Here pass your activity where you want to redirect.
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(getContext(),(int) (Math.random() * 100), intent, 0);
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.myContext, "default")
                 .setSmallIcon(R.drawable.main_icon)
                 .setContentTitle("GeoWeather")
-                .setContentText("The temp in " + locationName + " is " + temperature);
+                .setContentText("The temp in " + locationName + " is " + temperature).setContentIntent(contentIntent);
         Log.i("NOTIFICATION", "created builder");
 
         NotificationManager mManager = (NotificationManager) MainActivity.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
