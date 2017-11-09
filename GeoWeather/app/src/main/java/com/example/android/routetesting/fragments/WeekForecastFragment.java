@@ -70,9 +70,9 @@ public class WeekForecastFragment extends Fragment {
     }
 
     public static Coord loadLocationInfo(boolean gpsOverride) {
-        String location = getPrefLocation();
+        String location = getPrefLocation().toLowerCase();
         Log.i("WEEKFORECAST", location);
-        if (location.equals("GPS") || gpsOverride) {
+        if (location.equals("gps") || gpsOverride) {
             GPSTracker tracker = new GPSTracker(getAppContext(), new Activity());
             return new Coord(tracker.getLatitude(), tracker.getLongitude());
         }
