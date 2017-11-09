@@ -52,7 +52,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         myContext = (FragmentActivity) context;
         super.onAttach(context);
     }
-
     public WeatherDetailFragment() {
     }
 
@@ -84,7 +83,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
 
             return new Coord(tracker.getLatitude(), tracker.getLongitude());
         }
-
         return RouteDecoder.geoLocator(location);
     }
 
@@ -116,9 +114,9 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
 
         try {
             if (fahrenheit) {
-                temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";
-                minTemp = Helper.celsiusToFahrenheit(info.getMinTemp()) + " °F";
-                maxTemp = Helper.celsiusToFahrenheit(info.getMaxTemp()) + " °F";
+                temperature = Math.round(Helper.celsiusToFahrenheit(info.getTemperature()) *100.0)/100.f + " °F";
+                minTemp = Math.round(Helper.celsiusToFahrenheit(info.getMinTemp()) *100.0)/100.f + " °F";
+                maxTemp = Math.round(Helper.celsiusToFahrenheit(info.getMaxTemp()) *100.0)/100.f + " °F";
             } else {
                 temperature = info.getTemperature() + " °C";
                 minTemp = info.getMinTemp() + " °C";
@@ -158,7 +156,7 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         statusImage.setImageResource(iconResId);
 
         cityTv.setText(info != null ? info.getLocation().getCityName(true) : "NoCityFound");
-        humidityTv.setText((info != null ? (info.getHumidity()) : "NoHumidityFound") + "");
+        humidityTv.setText((info != null ? ( info.getHumidity()) : "NoHumidityFound") + "");
         windTv.setText((info != null ? info.getWindspeed() : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
         Session.selectedDay = null;
     }
@@ -243,8 +241,5 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         task.execute();
 
         WeatherInfo currentSelected = Session.currentSelectedInfo;
-
-        Log.i("DEBUG_DEBUG", (currentSelected == null ? "Current Null" : currentSelected).toString());
-
     }
 }

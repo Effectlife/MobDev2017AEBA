@@ -16,7 +16,7 @@
         <FrameLayout
             android:id="@+id/weather_detail_container"
             android:layout_width="match_parent"
-            android:layout_height="320dp" />
+            android:layout_height="280dp" />
 
         <FrameLayout
             android:id="@+id/week_forecast_container"

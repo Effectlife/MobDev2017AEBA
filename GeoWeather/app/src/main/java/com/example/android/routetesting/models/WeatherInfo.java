@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.android.routetesting.MainActivity;
 import com.example.android.routetesting.lookups.Weekday;
@@ -120,6 +121,7 @@ public class WeatherInfo {
 
         ArrayList<CustomListItem> items = new ArrayList<>();
         for (WeatherInfo info : infos) {
+            info.humidity = Math.round(info.humidity * 100.0)/100.0f;
 
             String title = "ERRORED";
             if (cityname) {
@@ -142,7 +144,7 @@ public class WeatherInfo {
             } else {
                 String temperature;
                 if (fahrenheit) {
-                    temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";
+                    temperature =  Math.round(Helper.celsiusToFahrenheit(info.getTemperature())*100.0)/100.0f + " °F";
                 } else {
                     temperature = info.getTemperature() + " °C";
                 }
@@ -150,30 +152,6 @@ public class WeatherInfo {
             }
         }
         return items;
-    }
-
-    public CustomListItem convertToCustomListItem(boolean city) {
-
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
-        boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
-        String temperature;
-        if (fahrenheit) {
-            temperature = Helper.celsiusToFahrenheit(getTemperature()) + " °F";
-        } else {
-            temperature = getTemperature() + " °C";
-        }
-        if (city)
-            return new CustomListItem(getLocation().getCityName(false), temperature, getTime());
-        else {
-            try {
-                Calendar c = Calendar.getInstance();
-                c.setTime(getTime());
-                return new CustomListItem(Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue(), getTemperature() + "", getTime());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     @Override

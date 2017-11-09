@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">GeoWeather</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-
     <string name="calculate">Calculate</string>
     <string name="destination">Berlin</string>
     <string name="origin">Hasselt</string>
@@ -14,12 +11,9 @@
     <string name="reload_current_weather">Reload Current weather</string>
     <string name="brussels">Brussels</string>
     <string name="title_activity_settings">Settings</string>
-
     <!-- Strings related to Settings -->
-
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
-
     <string name="pref_title_fahrenheit">Fahrenheit</string>
     <string name="pref_description_fahrenheit">Use fahrenheit instead of celcius
     </string>
@@ -32,6 +26,4 @@
     <string name="geoweather_about_message">GeoWeather is a project made by Aaron Engler and Berkan Aktag for Mobile Development at Hogeschool PXL Hasselt</string>
     <string name="origin_address">Origin address</string>
     <string name="destination_address">Destination address</string>
-
-
 </resources>

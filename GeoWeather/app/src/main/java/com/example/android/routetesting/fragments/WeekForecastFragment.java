@@ -88,7 +88,6 @@ public class WeekForecastFragment extends Fragment {
             @Override
             protected void onPreExecute() {
                 coord = loadLocationInfo(false);
-                Log.i("WFFRAG", "coord: " + coord);
             }
 
             @Override
@@ -109,7 +108,6 @@ public class WeekForecastFragment extends Fragment {
         };
         task.execute();
     }
-
     public void populateWeekList(final ArrayList<WeatherInfo> weatherInfos) {
 
         ListView weathersList = (ListView) rootView.findViewById(R.id.week_forecast_list_view);
