@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="125sp"
             android:contentDescription="@string/weathertypeimage"
-            android:src="@drawable/raining" />
+            android:src="@drawable/na" />
 
         <LinearLayout
             android:layout_width="match_parent"

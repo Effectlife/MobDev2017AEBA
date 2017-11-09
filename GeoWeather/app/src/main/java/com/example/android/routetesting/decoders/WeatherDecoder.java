@@ -1,7 +1,6 @@
 package com.example.android.routetesting.decoders;
 
-import android.os.AsyncTask;
-import android.util.IntProperty;
+
 import android.util.Log;
 
 import com.example.android.routetesting.lookups.ApiUrl;

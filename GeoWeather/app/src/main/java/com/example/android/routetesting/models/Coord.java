@@ -79,22 +79,28 @@ public class Coord {
     }
 
 
-    public String getCityName() {
+    public String getCityName(boolean async) {
         //return "API-OK,DISABLED";
 
         Document apiResult = null;
 
-        try {
-            apiResult = new AsyncTask<Object, Void, Document>() {
-                @Override
-                protected Document doInBackground(Object... objects) {
-                    return ApiDocumentBuilder.decode(ApiUrl.MAPQUEST, getLat(), getLon());
-                }
-            }.execute(getLat(), getLon()).get();
+        if(async){
+            try {
+                apiResult = new AsyncTask<Object, Void, Document>() {
+                    @Override
+                    protected Document doInBackground(Object... objects) {
+                        return ApiDocumentBuilder.decode(ApiUrl.MAPQUEST, getLat(), getLon());
+                    }
+                }.execute(getLat(), getLon()).get();
 
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }else{
+            apiResult = ApiDocumentBuilder.decode(ApiUrl.MAPQUEST, getLat(), getLon());
         }
+
+
 
         //Log.d("MAPQUEST", Helper.getStringFromDocument(apiResult));
 

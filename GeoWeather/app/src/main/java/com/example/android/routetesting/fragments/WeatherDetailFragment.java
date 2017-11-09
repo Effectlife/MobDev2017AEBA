@@ -41,7 +41,7 @@ import static com.example.android.routetesting.MainActivity.getAppContext;
  * Created by 11500399 on 08-Nov-17.
  */
 
-public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout swipeContainer;
     private View rootView;
 
@@ -61,11 +61,11 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
+        rootView = inflater.inflate(R.layout.fragment_weather_detail, container, false);
         swipeContainer = rootView.findViewById(R.id.wdfRefresh);
-swipeContainer.setOnRefreshListener(this);
+        swipeContainer.setOnRefreshListener(this);
 
-onRefresh();
+        onRefresh();
 
         Log.i("WEATHERDETAILFRAG", "Created rootview and found swipecontainer");
 
@@ -93,7 +93,7 @@ onRefresh();
     private WeatherInfo fetchWeatherDetails(Coord coord) {
         Log.i("FORMATTING", "WeatherDetail");
         WeatherInfo info = Session.currentSelectedInfo;
-        if(info == null){
+        if (info == null) {
             if (coord.equals(new Coord(1000, 1000))) {
 
                 info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
@@ -138,32 +138,40 @@ onRefresh();
         }
 
 
-        TextView dayTv = (TextView) rootView.findViewById(R.id.weatherDetailDay2);
-        TextView tempTv = (TextView) rootView.findViewById(R.id.weatherDetailTemp2);
-        TextView cityTv = (TextView) rootView.findViewById(R.id.weatherDetailCity2);
-        ImageView statusImage = (ImageView) rootView.findViewById(R.id.weatherDetailStatusImage2);
-        TextView humidityTv = (TextView) rootView.findViewById(R.id.weatherDetailHumiditySmall2);
-        TextView lowTempTv = (TextView) rootView.findViewById(R.id.weatherDetailTempLowSmall2);
-        TextView highTempTv = (TextView) rootView.findViewById(R.id.weatherDetailTempHighSmall2);
-        TextView windTv = (TextView) rootView.findViewById(R.id.weatherDetailWindSmall2);
+        TextView dayTv = rootView.findViewById(R.id.weatherDetailDay2);
+        TextView tempTv = rootView.findViewById(R.id.weatherDetailTemp2);
+        TextView cityTv = rootView.findViewById(R.id.weatherDetailCity2);
+        ImageView statusImage = rootView.findViewById(R.id.weatherDetailStatusImage2);
+        TextView humidityTv = rootView.findViewById(R.id.weatherDetailHumiditySmall2);
+        TextView lowTempTv = rootView.findViewById(R.id.weatherDetailTempLowSmall2);
+        TextView highTempTv = rootView.findViewById(R.id.weatherDetailTempHighSmall2);
+        TextView windTv = rootView.findViewById(R.id.weatherDetailWindSmall2);
 
-        dayTv.setText(Session.selectedDay);
+
+        if (Session.selectedDay == null || Session.selectedDay.equals("")) {
+            dayTv.setVisibility(GONE);
+        } else {
+            dayTv.setVisibility(View.VISIBLE);
+            dayTv.setText(Session.selectedDay);
+        }
+
+
         tempTv.setText((temperature != null ? temperature : "NoTempFound") + "");
         lowTempTv.setText((minTemp != null ? minTemp : "NoTempFound") + "");
         highTempTv.setText((maxTemp != null ? maxTemp : "NoTempFound") + "");
 
 
-//        int iconResId = getResources().getIdentifier("weathericon" + info.getSymbol(), "drawable", getPackageName());
-//        Log.i("IMGSYMBOL", iconResId + " " + info.getSymbol());
-//
-//        if (iconResId == 0) {
-//            iconResId = getResources().getIdentifier("na", "drawable", getPackageName());
-//        }
+        int iconResId = getResources().getIdentifier("weathericon" + info.getSymbol(), "drawable", getActivity().getPackageName());
+        Log.i("IMGSYMBOL", iconResId + " " + info.getSymbol());
 
-        //statusImage.setImageResource(iconResId);
+        if (iconResId == 0) {
+            iconResId = getResources().getIdentifier("na", "drawable", getActivity().getPackageName());
+        }
+
+        statusImage.setImageResource(iconResId);
 
 
-        cityTv.setText(info != null ? info.getLocation().getCityName() : "NoCityFound");
+        cityTv.setText(info != null ? info.getLocation().getCityName(true) : "NoCityFound");
         humidityTv.setText((info != null ? info.getHumidity() : "NoHumidityFound") + "");
         windTv.setText((info != null ? info.getWindspeed() : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
     }
@@ -180,7 +188,7 @@ onRefresh();
         Intent intent = new Intent(MainActivity.getAppContext(), MainActivity.class); // Here pass your activity where you want to redirect.
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(getContext(),(int) (Math.random() * 100), intent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(getContext(), (int) (Math.random() * 100), intent, 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.myContext, "default")
                 .setSmallIcon(R.drawable.main_icon)
@@ -194,7 +202,6 @@ onRefresh();
         Log.i("NOTIFICATION", "build and notified");
 
     }
-
 
 
     @Override
@@ -216,7 +223,7 @@ onRefresh();
 
                 notificationCoord = loadLocationInfo(getNotificationGPS());
                 WeekForecastFragment wfm;
-                if(Session.detailScreen == 0){
+                if (Session.detailScreen == 0) {
                     wfm = (WeekForecastFragment) myContext.getSupportFragmentManager().findFragmentByTag("wfd");
                     wfm.onRefresh();
                 }
@@ -226,22 +233,23 @@ onRefresh();
             @Override
             protected Object[] doInBackground(Object[] params) {
 
-Log.i("WDF", "doing in background");
+                Log.i("WDF", "doing in background");
 
                 Object[] obj = new Object[2];
                 obj[0] = fetchWeatherDetails(coord);
-                Log.i("WDF", "fetched weatherdetails: "+obj[0]);
+                Log.i("WDF", "fetched weatherdetails: " + obj[0]);
                 currentWeatherGPS[0] = WeatherDecoder.getSingleWeatherFromApi(notificationCoord, Calendar.getInstance().getTime());
                 Log.i("WDF", "fetched weatherinfoGPS" + currentWeatherGPS[0]);
 
                 return obj;
             }
+
             @Override
             protected void onPostExecute(Object[] obj) {
                 super.onPostExecute(obj);
-                formatWeatherDetail((WeatherInfo)obj[0]);
-                String cityname = currentWeatherGPS[0].getLocation().getCityName();
-                Log.i("WDF", "recieved cityname "+cityname);
+                formatWeatherDetail((WeatherInfo) obj[0]);
+                String cityname = currentWeatherGPS[0].getLocation().getCityName(true);
+                Log.i("WDF", "recieved cityname " + cityname);
                 addNotification(currentWeatherGPS[0].getTemperature(), cityname);
                 swipeContainer.setRefreshing(false);
             }

@@ -64,33 +64,15 @@ public abstract class RouteDecoder {
 
 
     public static ArrayList<Step> routeStepFromApi(final int maxDistance, final String firstAddress, final String secondAddress) {
+
+        Document directions = ApiDocumentBuilder.decode(ApiUrl.GOOGLEDIR, (String) firstAddress, (String) secondAddress);
+        NodeList stepsnodes = directions.getElementsByTagName("step");
+        ArrayList<Step> allSteps = new ArrayList<Step>();
         ArrayList<Step> steps = new ArrayList<>();
-        try {
-            steps = new AsyncTask<Object, Void, ArrayList<Step>>() {
+        fillSteps(stepsnodes, allSteps);
+        return allSteps;
 
 
-                @Override
-                protected ArrayList<Step> doInBackground(Object... objects) {
-                    //Log.d("ROUTEDECODER","Starting Decode");
-                    Document directions = ApiDocumentBuilder.decode(ApiUrl.GOOGLEDIR, (String) firstAddress, (String) secondAddress);
-                    //Log.d("ROUTEDECODER","Finished Decode");
-                    //Log.e("STEPS", Helper.getStringFromDocument(directions));
-                    NodeList steps = directions.getElementsByTagName("step");
-
-                    ArrayList<Step> allSteps = new ArrayList<Step>();
-                    fillSteps(steps, allSteps);
-
-
-                    return allSteps;
-                }
-
-
-            }.execute(maxDistance, firstAddress, secondAddress).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return steps;
     }
 
 

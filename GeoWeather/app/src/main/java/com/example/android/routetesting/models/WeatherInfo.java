@@ -124,7 +124,7 @@ public class WeatherInfo {
         for (WeatherInfo info : infos) {
             String title = "ERRORED";
             if (cityname) {
-                title = info.getLocation().getCityName();
+                title = info.getLocation().getCityName(false);
 
             } else {
                 try {
@@ -168,7 +168,7 @@ public class WeatherInfo {
             temperature = getTemperature() + " °C";
         }
         if (city)
-            return new CustomListItem(getLocation().getCityName(), temperature, getTime());
+            return new CustomListItem(getLocation().getCityName(false), temperature, getTime());
         else {
             try {
                 Calendar c = Calendar.getInstance();
