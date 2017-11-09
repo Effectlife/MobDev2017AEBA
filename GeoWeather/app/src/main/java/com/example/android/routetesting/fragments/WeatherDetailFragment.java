@@ -81,8 +81,8 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
     }
 
     public static Coord loadLocationInfo(boolean gpsOverride) {
-        String location = getPrefLocation();
-        if (location.equals("GPS") || gpsOverride) {
+        String location = getPrefLocation().toLowerCase();
+        if (location.equals("gps") || gpsOverride) {
             GPSTracker tracker = new GPSTracker(getAppContext(), new Activity());
             return new Coord(tracker.getLatitude(), tracker.getLongitude());
         }
