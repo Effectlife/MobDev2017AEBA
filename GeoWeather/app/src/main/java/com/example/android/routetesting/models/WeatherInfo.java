@@ -19,10 +19,7 @@ import java.util.Date;
 public class WeatherInfo {
     private Coord location;
     private float temperature;
-
     private float minTemp, maxTemp;
-
-
     private float humidity;
     private float windspeed;
     private String direction;
@@ -37,7 +34,7 @@ public class WeatherInfo {
         this.temperature = temperature;
         this.minTemp = minTemp;
         this.maxTemp = maxTemp;
-        this.humidity = humidity;
+        this.humidity = Math.round(humidity * 100.0) / 100.0f;
         this.windspeed = windspeed;
         this.direction = direction;
         this.time = time;
@@ -81,6 +78,7 @@ public class WeatherInfo {
     }
 
     public void setHumidity(float humidity) {
+
         this.humidity = humidity;
     }
 
@@ -108,10 +106,10 @@ public class WeatherInfo {
         this.time = time;
     }
 
-    public String getDay(){
+    public String getDay() {
         Calendar c = Calendar.getInstance();
         c.setTime(this.getTime());
-        return Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue() +" ";
+        return Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue() + " ";
     }
 
     public static ArrayList<CustomListItem> convertListWeatherToListCLI(ArrayList<WeatherInfo> infos, boolean cityname, boolean humidity) {
@@ -122,6 +120,7 @@ public class WeatherInfo {
 
         ArrayList<CustomListItem> items = new ArrayList<>();
         for (WeatherInfo info : infos) {
+
             String title = "ERRORED";
             if (cityname) {
                 title = info.getLocation().getCityName(false);
@@ -130,34 +129,30 @@ public class WeatherInfo {
                 try {
                     Calendar c = Calendar.getInstance();
                     c.setTime(info.getTime());
-                    title = Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue()+" ";
-                    //Log.d("SUCCESS", "Success "+cityTextView.getText());
+                    title = Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue() + " ";
                 } catch (Exception e) {
-                    //Log.e("FAILED","Failed "+position);
                     e.printStackTrace();
                 }
             }
 
-    if(humidity){
+            if (humidity) {
 
-    items.add(new CustomListItem(title+" ", info.getHumidity()+"%", info.getTime()));
+                items.add(new CustomListItem(title + " ", info.getHumidity() + "%", info.getTime()));
 
-    }else {
-    String temperature;
-    if (fahrenheit) {
-        temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";
-    } else {
-        temperature = info.getTemperature() + " °C";
-    }
-    items.add(new CustomListItem(title+" ", temperature, info.getTime()));
-    }
-
+            } else {
+                String temperature;
+                if (fahrenheit) {
+                    temperature = Helper.celsiusToFahrenheit(info.getTemperature()) + " °F";
+                } else {
+                    temperature = info.getTemperature() + " °C";
+                }
+                items.add(new CustomListItem(title + " ", temperature, info.getTime()));
+            }
         }
         return items;
     }
 
     public CustomListItem convertToCustomListItem(boolean city) {
-
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
         boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
@@ -174,9 +169,7 @@ public class WeatherInfo {
                 Calendar c = Calendar.getInstance();
                 c.setTime(getTime());
                 return new CustomListItem(Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue(), getTemperature() + "", getTime());
-                //Log.d("SUCCESS", "Success "+cityTextView.getText());
             } catch (Exception e) {
-                //Log.e("FAILED","Failed "+position);
                 e.printStackTrace();
             }
         }

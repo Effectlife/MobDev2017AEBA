@@ -1,5 +1,6 @@
 package com.example.android.routetesting.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -31,7 +32,6 @@ import com.example.android.routetesting.models.Coord;
 import com.example.android.routetesting.models.Helper;
 import com.example.android.routetesting.models.WeatherInfo;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.view.View.GONE;
@@ -54,7 +54,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
     }
 
     public WeatherDetailFragment() {
-
     }
 
     @Nullable
@@ -66,8 +65,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         swipeContainer.setOnRefreshListener(this);
 
         onRefresh();
-
-        Log.i("WEATHERDETAILFRAG", "Created rootview and found swipecontainer");
 
         return rootView;
     }
@@ -95,36 +92,20 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
 
         WeatherInfo info = Session.currentSelectedInfo;
         int detail = Session.detailScreen;
-        Log.i("FORMATTING", "WeatherDetail; Coord: " + coord + "is detail: "+detail);
-        Log.i("FORMATTING", "WeatherDetail: "+info);
-
 
         if (info == null) {
             if (coord.equals(new Coord(1000, 1000))) {
-
                 return new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
             }
-//
-//            } else {
-//                info = WeatherDecoder.getSingleWeatherFromApi(coord, Calendar.getInstance().getTime());
-//            }
-//            if (info == null) {
-//                Log.i("FORMATDETAIL", "info == null, Creating default weather");
-//                info = new WeatherInfo(new Coord(0, 0), 0f, 0f, 0f, 0f, 0f, "NONE", Calendar.getInstance().getTime(), 0);
-//            }
         }
-
         if (detail == 1) {
             return Session.currentSelectedInfo;
         } else {
             return WeatherDecoder.getSingleWeatherFromApi(coord, Calendar.getInstance().getTime());
         }
-
-
     }
 
     private void formatWeatherDetail(WeatherInfo info) {
-
 
         Log.i("FORMATDETAIL", info.toString());
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
@@ -132,7 +113,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         String temperature = null;
         String maxTemp = null;
         String minTemp = null;
-
 
         try {
             if (fahrenheit) {
@@ -148,7 +128,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
                 Exception e) {
         }
 
-
         TextView dayTv = rootView.findViewById(R.id.weatherDetailDay2);
         TextView tempTv = rootView.findViewById(R.id.weatherDetailTemp2);
         TextView cityTv = rootView.findViewById(R.id.weatherDetailCity2);
@@ -161,7 +140,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         dayTv.setVisibility(GONE);
         if (Session.selectedDay == null || Session.selectedDay.equals("")) {
 
-
         } else {
             dayTv.setVisibility(View.VISIBLE);
             dayTv.setText(Session.selectedDay);
@@ -171,9 +149,7 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         lowTempTv.setText((minTemp != null ? minTemp : "NoTempFound") + "");
         highTempTv.setText((maxTemp != null ? maxTemp : "NoTempFound") + "");
 
-
         int iconResId = getResources().getIdentifier("weathericon" + info.getSymbol(), "drawable", getActivity().getPackageName());
-        Log.i("IMGSYMBOL", iconResId + " " + info.getSymbol());
 
         if (iconResId == 0) {
             iconResId = getResources().getIdentifier("na", "drawable", getActivity().getPackageName());
@@ -181,9 +157,8 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
 
         statusImage.setImageResource(iconResId);
 
-
         cityTv.setText(info != null ? info.getLocation().getCityName(true) : "NoCityFound");
-        humidityTv.setText((info != null ? info.getHumidity() : "NoHumidityFound") + "");
+        humidityTv.setText((info != null ? (info.getHumidity()) : "NoHumidityFound") + "");
         windTv.setText((info != null ? info.getWindspeed() : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
         Session.selectedDay = null;
     }
@@ -206,23 +181,17 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
                 .setSmallIcon(R.drawable.main_icon)
                 .setContentTitle("GeoWeather")
                 .setContentText("The temp in " + locationName + " is " + temperature).setContentIntent(contentIntent);
-        Log.i("NOTIFICATION", "created builder");
 
         NotificationManager mManager = (NotificationManager) MainActivity.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        Log.i("NOTIFICATION", "fetched manager");
         mManager.notify(1, mBuilder.build());
-        Log.i("NOTIFICATION", "build and notified");
-
     }
-
 
     @Override
     public void onRefresh() {
 
         Log.i("Weatherdetail", "refreshed Session.detail: "+ Session.detailScreen);
         final WeatherInfo[] currentWeatherGPS = new WeatherInfo[1];
-        AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
-//            ProgressBar bar = findViewById(R.id.mainProgressBar);
+        @SuppressLint("StaticFieldLeak") AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
 
             private Coord coord;
             private Coord notificationCoord;
@@ -235,7 +204,6 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
 
                 notificationCoord = loadLocationInfo(getNotificationGPS()); //boolean = true if always gps
 
-
                 WeekForecastFragment wfm;
                 if (Session.detailScreen == 0) {
                     wfm = (WeekForecastFragment) myContext.getSupportFragmentManager().findFragmentByTag("wfd");
@@ -243,14 +211,8 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
                         wfm.onRefresh();
                     } catch (NullPointerException npe) {
                         npe.printStackTrace();
-                        Log.i("WDF", "cannot refresh weekforecast in detailactivity, since it doesnt exist here");
                     }
                 }
-
-
-
-
-                Log.i("WDF", "preexec-done: coord: " + coord + "; notifcoord: " + notificationCoord);
             }
 
             @Override
@@ -278,28 +240,11 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
                 Session.detailScreen = 0;
             }
         };
-
-
         task.execute();
 
-
-        Log.i("-----------", "----------------");
         WeatherInfo currentSelected = Session.currentSelectedInfo;
-        ArrayList<WeatherInfo> list1 = Session.weekInfo;
-
 
         Log.i("DEBUG_DEBUG", (currentSelected == null ? "Current Null" : currentSelected).toString());
-
-        if (list1 != null) {
-            for (WeatherInfo info : list1) {
-                Log.i("DEBUG_DEBUG", (info == null ? "Info Null" : info).toString());
-            }
-        } else {
-            Log.i("DEBUG_DEBUG", "ListNull");
-        }
-
-        Log.i("-----------", "----------------");
-
 
     }
 }

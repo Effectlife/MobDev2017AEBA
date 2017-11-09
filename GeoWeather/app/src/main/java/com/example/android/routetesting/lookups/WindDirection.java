@@ -5,7 +5,6 @@ package com.example.android.routetesting.lookups;
  */
 
 public class WindDirection {
-
     public static final String N = "N";
     public static final String NW ="NW";
     public static final String W="W";

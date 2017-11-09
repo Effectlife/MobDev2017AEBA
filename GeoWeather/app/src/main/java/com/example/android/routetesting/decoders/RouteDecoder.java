@@ -1,5 +1,6 @@
 package com.example.android.routetesting.decoders;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -20,21 +21,15 @@ import java.util.concurrent.ExecutionException;
  */
 
 public abstract class RouteDecoder {
-
-
+    @SuppressLint("StaticFieldLeak")
     public static Coord geoLocator(final String location) {
-
         Coord coord = null;
-
-
         try {
             coord = new AsyncTask<Object, Void, Coord>() {
-
                 @Override
                 protected Coord doInBackground(Object... params) {
 
                     Document doc = ApiDocumentBuilder.decode(ApiUrl.GOOGLELOC, location);
-                    //Log.e("GEOLOC", Helper.getStringFromDocument(doc));
 
                     if (doc.getElementsByTagName("status").item(0).getTextContent().equals("ZERO_RESULTS")) {
                         return new Coord(1000, 1000); //returns an normally invalid coordinate to inform the caller the location was not found
@@ -50,7 +45,6 @@ public abstract class RouteDecoder {
                             Log.e("MIEP" + i, "Error");
                         }
                     }
-
                     return new Coord(Float.parseFloat(lats.item(0).getTextContent()), Float.parseFloat(lons.item(0).getTextContent()));
                 }
             }.execute().get();
@@ -59,10 +53,7 @@ public abstract class RouteDecoder {
             return new Coord(0, 0);
         }
         return coord;
-
     }
-
-
     public static ArrayList<Step> routeStepFromApi(final int maxDistance, final String firstAddress, final String secondAddress) {
 
         Document directions = ApiDocumentBuilder.decode(ApiUrl.GOOGLEDIR, (String) firstAddress, (String) secondAddress);
@@ -72,10 +63,9 @@ public abstract class RouteDecoder {
         fillSteps(stepsnodes, allSteps);
         return allSteps;
 
-
     }
 
-
+    @SuppressLint("StaticFieldLeak")
     public static ArrayList<Coord> routeCoordFromApi(final int maxDistance, final String firstAddress, final String secondAddress) {
 
         final ArrayList<Step> allSteps = routeStepFromApi(maxDistance, firstAddress, secondAddress);
@@ -99,7 +89,6 @@ public abstract class RouteDecoder {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
         return coords;
     }
 
@@ -112,7 +101,6 @@ public abstract class RouteDecoder {
                     Float.parseFloat(getLon(currentStep)),
                     Integer.parseInt(getDuration(currentStep))
             ));
-
         }
     }
 

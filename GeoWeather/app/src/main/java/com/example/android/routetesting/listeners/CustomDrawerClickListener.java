@@ -33,8 +33,6 @@ public class CustomDrawerClickListener implements ListView.OnItemClickListener {
                 intent = new Intent(parent.getContext(), AboutActivity.class);
                 parent.getContext().startActivity(intent);
                 break;
-
-
             default:
                 break;
         }

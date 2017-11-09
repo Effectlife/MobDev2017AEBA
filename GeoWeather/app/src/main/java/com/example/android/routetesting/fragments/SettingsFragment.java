@@ -21,7 +21,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-
     }
 
     @Override

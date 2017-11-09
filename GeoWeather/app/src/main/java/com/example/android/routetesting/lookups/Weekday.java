@@ -15,7 +15,6 @@ public enum Weekday {
     FRIDAY("Friday"),
     SATURDAY("Saturday");
 
-
     private String value;
 
     Weekday(String value) {

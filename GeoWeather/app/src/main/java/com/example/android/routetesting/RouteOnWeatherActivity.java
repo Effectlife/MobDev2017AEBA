@@ -1,5 +1,6 @@
 package com.example.android.routetesting;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +27,6 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
     private Button calculateButton;
     private ListView listView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,16 +36,12 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
         calculateButton = (Button) findViewById(R.id.calculateButton);
         listView = (ListView) findViewById(R.id.listView);
 
-
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 update();
-
-
             }
         });
-
 
     }
 
@@ -57,7 +53,7 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
         infos[0] = new ArrayList<>();
         clis[0] = new ArrayList<>();
 
-        AsyncTask task = new AsyncTask() {
+        @SuppressLint("StaticFieldLeak") AsyncTask task = new AsyncTask() {
             ProgressBar bar = findViewById(R.id.routeProgressBar);
             Button button = findViewById(R.id.calculateButton);
 
@@ -82,7 +78,6 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
                 return null;
             }
 
-
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
@@ -94,15 +89,11 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Session.currentSelectedInfo = Session.routeInfo.get(position);
                         startActivity(new Intent(parent.getContext(), DetailActivity.class));
-
-
                     }
                 });
                 bar.setVisibility(View.GONE);
                 button.setEnabled(true);
             }
-
-
         };
         task.execute();
     }

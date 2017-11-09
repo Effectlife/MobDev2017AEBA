@@ -55,14 +55,7 @@ public class CustomMenuItemAdapter extends BaseAdapter {
                     R.layout.drawer_menu_item, null);
         }
 
-
-        //TODO: correctly implement images in drawer menu
-        //ImageView imageView = (ImageView)convertView.findViewById(R.id.menuImage);
         TextView textView = (TextView) convertView.findViewById(R.id.menuText);
-
-
-
-        //imageView.setImageDrawable(items.get(position).getImage());
         textView.setText(items.get(position).getTitle());
 
         return convertView;

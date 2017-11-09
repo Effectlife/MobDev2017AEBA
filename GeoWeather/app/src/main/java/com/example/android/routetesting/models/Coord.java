@@ -1,5 +1,6 @@
 package com.example.android.routetesting.models;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -61,9 +62,7 @@ public class Coord {
                 if (Helper.distance(coords.get(i), coords.get(i + 1)) > maxdistance) {
                     longerFound = true;
                     coords.add(i + 1, Helper.avgDst(coords.get(i), coords.get(i + 1)));
-                    //i++;
                 }
-
             }
         }
     }
@@ -72,18 +71,14 @@ public class Coord {
         float lat = getLat();
         float lon = getLon();
 
-
         lat = ((float) ((int) (lat * 100))) / 100;
         lon = ((float) ((int) (lon * 100))) / 100;
         return "(" + lat + "," + lon + ")";
     }
 
-
+    @SuppressLint("StaticFieldLeak")
     public String getCityName(boolean async) {
-        //return "API-OK,DISABLED";
-
         Document apiResult = null;
-
         if(async){
             try {
                 apiResult = new AsyncTask<Object, Void, Document>() {
@@ -92,7 +87,6 @@ public class Coord {
                         return ApiDocumentBuilder.decode(ApiUrl.MAPQUEST, getLat(), getLon());
                     }
                 }.execute(getLat(), getLon()).get();
-
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -100,13 +94,9 @@ public class Coord {
             apiResult = ApiDocumentBuilder.decode(ApiUrl.MAPQUEST, getLat(), getLon());
         }
 
-
-
-        //Log.d("MAPQUEST", Helper.getStringFromDocument(apiResult));
-
         NodeList locations = apiResult.getElementsByTagName("location");
         Node location = locations.item(0);
-        //Log.e("DECODECITY", "Locationstag: "+location.getNodeName());
+
         NodeList children = location.getChildNodes();
         Node hopeType = null;
         Node node = null;
@@ -115,24 +105,15 @@ public class Coord {
 
             try {
                 hopeType = node.getAttributes().getNamedItem("type");
-                //Log.e("NODETYPE", hopeType.getNodeValue());
             } catch (Exception e) {
                 continue;
             }
-
             if (node != null && hopeType != null && hopeType.getNodeValue().equals("City")) {
-                //Log.d("DECODECITY", node.getTextContent()+" ");
                 return node.getTextContent();
             }
-
-
         }
-
-
         return "Unknown";
-
     }
-
 
     @Override
     public boolean equals(Object obj) {

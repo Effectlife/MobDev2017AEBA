@@ -23,8 +23,6 @@ public class CustomMenuItem {
 
     public void setImage(Drawable image) {
 
-
-
         this.image = image;
     }
 

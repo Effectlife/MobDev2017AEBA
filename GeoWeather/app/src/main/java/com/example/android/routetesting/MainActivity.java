@@ -41,13 +41,11 @@ import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity {
 
-
     //WeatherIcons come from
     //https://vclouds.deviantart.com/art/VClouds-Weather-Icons-179152045
 
     private static Context context;
     FragmentManager fragmentManager;
-    //SwipeRefreshLayout swipeContainer;
 
     public static Context getAppContext() {
         return MainActivity.context;
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MainActivity.context = getApplicationContext();
-
 
         setContentView(R.layout.activity_main);
         Session.detailScreen = 0;
@@ -70,9 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.weather_detail_container, weatherDetailFragment, "wdfd")
                 .commit();
 
-
         setupFirstView();
-
     }
 
     //Setup the drawer
@@ -81,42 +76,5 @@ public class MainActivity extends AppCompatActivity {
         drawerList.setAdapter(new CustomMenuItemAdapter(getApplicationContext(), MenuItemGenerator.generate()));
         drawerList.setOnItemClickListener(new CustomDrawerClickListener());
     }
-
-
-
-//    public void onRefresh() {
-//        Log.i("MainRefresh", "main");
-//
-//
-//        AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
-////            ProgressBar bar = findViewById(R.id.mainProgressBar);
-//
-//            private Coord coord;
-//
-//            @Override
-//            protected void onPreExecute() {
-//
-//                swipeContainer.setRefreshing(true);
-//            }
-//
-//            @Override
-//            protected Object[] doInBackground(Object[] params) {
-//                WeekForecastFragment wfm = (WeekForecastFragment) getSupportFragmentManager().findFragmentByTag("wfd");
-//                wfm.onRefresh();
-//                WeatherDetailFragment wdfm = (WeatherDetailFragment) getSupportFragmentManager().findFragmentByTag("wdfd");
-//                wdfm.onRefresh();
-//
-//                return null;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(Object[] obj) {
-//                super.onPostExecute(obj);
-//                swipeContainer.setRefreshing(false);
-//            }
-//        };
-//
-//        task.execute();
-//    }
 
 }
