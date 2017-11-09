@@ -25,7 +25,7 @@
     </string>
 
     <string name="pref_title_location">Location</string>
-    <string name="pref_default_location">Brussels</string>
+    <string name="pref_default_location">DEFAULT</string>
 
     <string name="pref_description_gpsoverride">Use gps for notifications instead of the Location setting</string>
     <string name="pref_title_gpsoverride">GPS override notifications</string>

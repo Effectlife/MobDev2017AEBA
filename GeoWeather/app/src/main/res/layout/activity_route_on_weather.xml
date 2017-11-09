@@ -9,11 +9,13 @@
 
 
     <LinearLayout
-        android:layout_width="395dp"
+        android:layout_width="304dp"
         android:layout_height="495dp"
 
 
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -57,8 +59,8 @@
             android:background="@android:color/darker_gray"/>
         <Button
             android:id="@+id/calculateButton"
-            android:layout_width="139dp"
-            android:layout_height="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/calculate"
             tools:layout_editor_absoluteX="10dp"

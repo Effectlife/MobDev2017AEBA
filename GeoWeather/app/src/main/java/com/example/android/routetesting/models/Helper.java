@@ -26,12 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 public abstract class Helper {
 
 
-
-
-
-
-
-
     public static float celsiusToFahrenheit(float celsius) {
         return (celsius * 1.8f) + 32f;
     }
@@ -114,6 +108,9 @@ public abstract class Helper {
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(domSource, result);
+            if (writer.toString().length() > 200) {
+                return writer.toString().substring(0, 200);
+            }
             return writer.toString();
         } catch (TransformerException ex) {
             ex.printStackTrace();

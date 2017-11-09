@@ -49,19 +49,18 @@ public class WeekForecastFragment extends Fragment {
     }
 
     View rootView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_week_forecast, container, false);
 
 
-
-
-
         return rootView;
 
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
+
     private static String getPrefLocation() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
@@ -82,7 +81,7 @@ public class WeekForecastFragment extends Fragment {
     }
 
     private WeatherInfo fetchWeatherDetails(Coord coord) {
-        Log.i("FORMATTING", "WeatherDetail");
+        Log.i("FORMATTING", "WeatherDetail Coord: "+coord);
         WeatherInfo info;
 
         if (coord.equals(new Coord(1000, 1000))) {
@@ -110,6 +109,7 @@ public class WeekForecastFragment extends Fragment {
             return WeatherDecoder.getNextWeekInfo(coord);
         }
     }
+
     public void onRefresh() {
         Log.i("Weekforecast", "refreshed");
         AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
@@ -123,7 +123,7 @@ public class WeekForecastFragment extends Fragment {
 
 
                 coord = loadLocationInfo(false);
-                Log.i("WFFRAG", "coord: "+coord);
+                Log.i("WFFRAG", "coord: " + coord);
 
 
             }
@@ -131,16 +131,25 @@ public class WeekForecastFragment extends Fragment {
             @Override
             protected Object[] doInBackground(Object[] params) {
 
-                Object[] obj = new Object[2];
-                obj[0] = fetchWeatherDetails(coord);
-                obj[1] = fetchWeekInfo(coord);
+                Object[] obj = new Object[1];
+                //obj[0] = fetchWeatherDetails(coord);
+                obj[0] = fetchWeekInfo(coord);
+                int i = 0;
+
+
+                for (WeatherInfo info : (ArrayList<WeatherInfo>) obj[0]) {
+                    i++;
+                    Log.i("WFF", "infos: " + i + " " + info);
+                }
+
+
                 return obj;
             }
 
             @Override
             protected void onPostExecute(Object[] obj) {
                 super.onPostExecute(obj);
-                populateWeekList((ArrayList<WeatherInfo>)obj[1]);
+                populateWeekList((ArrayList<WeatherInfo>) obj[0]);
 
             }
         };
@@ -150,32 +159,38 @@ public class WeekForecastFragment extends Fragment {
 
 
     public void populateWeekList(final ArrayList<WeatherInfo> weatherInfos) {
-        Log.i("POPULATING", "1");
 
 
         for (WeatherInfo info : weatherInfos) {
             Log.i("POPULATING", "AllInfos: " + info);
 
         }
-        Log.i("POPULATING", "2");
+
 
         ListView weathersList = (ListView) rootView.findViewById(R.id.week_forecast_list_view);
 
-        Log.i("POPULATING", "3");
+
         final ArrayList<CustomListItem> customListItems = WeatherInfo.convertListWeatherToListCLI(weatherInfos, false, false);
 
         weathersList.setAdapter(new CustomListItemAdapter(getAppContext(), customListItems));
-        Log.i("POPULATING", "4: items in adapter"+customListItems.size());
+        Session.weekInfo = weatherInfos;
+
+        for (int i = 0; i < customListItems.size(); i++) {
+            CustomListItem cli = customListItems.get(i);
+            Log.i("CLI", "cli-nr: " + i + ": " + cli.getCity() + ";" + cli.getTemperature());
+        }
+
+
         Log.i("POPULATING", "Adapter is set");
 
         try {
-            Log.i("POPULATING", "5");
+
             weathersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Session.currentSelectedInfo = weatherInfos.get(position);
                     Session.selectedDay = weatherInfos.get(position).getDay();
-
+                    Session.detailScreen = 1;
                     startActivity(new Intent(parent.getContext(), DetailActivity.class));
                 }
             });
