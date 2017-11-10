@@ -22,7 +22,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Log.i("FORMATTING", "WeatherDetail");
+        //Log.i("FORMATTING", "WeatherDetail");
         WeatherInfo info = Session.currentSelectedInfo;
         WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();

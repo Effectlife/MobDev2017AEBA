@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="DAY"
+            android:text="@string/triple_dot"
             android:textSize="25sp"
 
             />
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="TEMP"
+            android:text="@string/triple_dot"
             android:textSize="30sp" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="CITY"
+            android:text="@string/triple_dot"
             android:textSize="25sp" />
 
         <ImageView
@@ -59,21 +59,21 @@
             <ImageView
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_weight="8"
+                android:layout_weight="2"
                 android:contentDescription="@string/humidityicon"
                 android:src="@drawable/drop" />
 
             <ImageView
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_weight="8"
+                android:layout_weight="5"
                 android:contentDescription="@string/temperatureicon"
                 android:src="@drawable/temp" />
 
             <ImageView
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_weight="8"
+                android:layout_weight="2"
                 android:contentDescription="@string/windicon"
                 android:src="@drawable/wind" />
         </LinearLayout>
@@ -81,8 +81,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="38sp"
-            android:layout_marginRight="38sp"
+            android:layout_marginLeft="25sp"
+            android:layout_marginRight="25sp"
             android:gravity="center">
 
             <TextView
@@ -91,22 +91,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="tmp" />
+                android:text="@string/triple_dot" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_weight="3"
                 android:gravity="center"
                 android:text="|" />
-
-            <TextView
-                android:id="@+id/weatherDetailTempHighSmall2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:gravity="center"
-                android:text="tmp" />
 
             <TextView
                 android:id="@+id/weatherDetailTempLowSmall2"
@@ -114,12 +106,27 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="tmp" />
+                android:text="@string/triple_dot" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="3"
+                android:text="@string/double_arrow"/>
+
+            <TextView
+                android:id="@+id/weatherDetailTempHighSmall2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="8"
+                android:gravity="center"
+                android:text="@string/triple_dot" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
                 android:gravity="center"
                 android:text="|" />
 
@@ -129,11 +136,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="tmp" />
+                android:text="@string/triple_dot" />
 
 
         </LinearLayout>
 
     </LinearLayout>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.routetesting.adapters.CustomListItemAdapter;
 import com.example.android.routetesting.decoders.WeatherDecoder;
@@ -61,15 +62,16 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
             protected void onPreExecute() {
                 bar.setVisibility(View.VISIBLE);
                 button.setEnabled(false);
+                Toast.makeText(RouteOnWeatherActivity.this,"Route is loading, this can take a while...",Toast.LENGTH_LONG).show();
                 addressOne[0] = addressOneText.getText().toString();
                 addressTwo[0] = addressTwoText.getText().toString();
-                Log.i("RouteOnWeatherActivity", "PreExec");
+                //Log.i("RouteOnWeatherActivity", "PreExec");
                 super.onPreExecute();
             }
 
             @Override
             protected Object doInBackground(Object[] params) {
-                Log.i("RouteOnWeatherActivity", "doInBack");
+                //Log.i("RouteOnWeatherActivity", "doInBack");
 
                 infos[0] = WeatherDecoder.getWeathersOnRoute(50000, addressOne[0], addressTwo[0]);
                 Session.routeInfo = infos[0];
@@ -81,9 +83,9 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                Log.i("RouteOnWeatherActivity", "PostExec");
+                //Log.i("RouteOnWeatherActivity", "PostExec");
                 listView.setAdapter(new CustomListItemAdapter(getApplicationContext(), clis[0]));
-                Log.i("RouteOnWeatherActivity", "adapter set");
+                Log.i("RouteOnWeatherActivity", "adapter set"); //Keep this log please
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -93,6 +95,7 @@ public class RouteOnWeatherActivity extends AppCompatActivity {
                 });
                 bar.setVisibility(View.GONE);
                 button.setEnabled(true);
+                Toast.makeText(RouteOnWeatherActivity.this,"Finished loading route",Toast.LENGTH_SHORT).show();
             }
         };
         task.execute();

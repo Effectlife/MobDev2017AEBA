@@ -40,9 +40,10 @@ public abstract class RouteDecoder {
 
                     for (int i = 0; i < lats.getLength(); i++) {
                         try {
-                            Log.e("MIEP" + i, lats.item(i).getTextContent() + "," + lons.item(i).getTextContent());
+                            //Log.e("MIEP" + i, lats.item(i).getTextContent() + "," + lons.item(i).getTextContent());
                         } catch (Exception e) {
-                            Log.e("MIEP" + i, "Error");
+                            Log.e("RouteDecoder", e.getLocalizedMessage());
+                            e.printStackTrace();
                         }
                     }
                     return new Coord(Float.parseFloat(lats.item(0).getTextContent()), Float.parseFloat(lons.item(0).getTextContent()));

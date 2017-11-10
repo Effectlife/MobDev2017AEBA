@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.android.routetesting.R;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
@@ -37,7 +38,7 @@ public class AboutActivity extends AppCompatActivity {
     private Element createCopyright() {
         final Element copyright = new Element();
 
-        final String copyrightString = String.format("Copyright %d by AE and BA", Calendar.getInstance().get(Calendar.YEAR));
+        final String copyrightString = String.format(Locale.getDefault(),"Copyright %d by AE and BA", Calendar.getInstance().get(Calendar.YEAR));
         copyright.setTitle(copyrightString);
         copyright.setGravity(Gravity.CENTER);
         copyright.setOnClickListener(new View.OnClickListener() {

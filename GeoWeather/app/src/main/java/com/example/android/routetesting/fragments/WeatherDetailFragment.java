@@ -106,17 +106,16 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
     private void formatWeatherDetail(WeatherInfo info) {
 
         Log.i("FORMATDETAIL", info.toString());
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());
-        boolean fahrenheit = sharedPrefs.getBoolean("pref_fahrenheit", false);
+
         String temperature = null;
         String maxTemp = null;
         String minTemp = null;
 
         try {
-            if (fahrenheit) {
-                temperature = Math.round(Helper.celsiusToFahrenheit(info.getTemperature()) *100.0)/100.f + " °F";
-                minTemp = Math.round(Helper.celsiusToFahrenheit(info.getMinTemp()) *100.0)/100.f + " °F";
-                maxTemp = Math.round(Helper.celsiusToFahrenheit(info.getMaxTemp()) *100.0)/100.f + " °F";
+            if (getFahrenheitPref()) {
+                temperature = Math.round(Helper.celsiusToFahrenheit(info.getTemperature()) *10.0)/10.f + " °F";
+                minTemp = Math.round(Helper.celsiusToFahrenheit(info.getMinTemp()) *10.0)/10.f + " °F";
+                maxTemp = Math.round(Helper.celsiusToFahrenheit(info.getMaxTemp()) *10.0)/10.f + " °F";
             } else {
                 temperature = info.getTemperature() + " °C";
                 minTemp = info.getMinTemp() + " °C";
@@ -156,8 +155,8 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         statusImage.setImageResource(iconResId);
 
         cityTv.setText(info != null ? info.getLocation().getCityName(true) : "NoCityFound");
-        humidityTv.setText((info != null ? ( info.getHumidity()) : "NoHumidityFound") + "");
-        windTv.setText((info != null ? info.getWindspeed() : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
+        humidityTv.setText((info != null ? ( info.getHumidity() +" %") : "NoHumidityFound") + "");
+        windTv.setText((info != null ? info.getWindspeed()+" m/s" : "NoWindspeedFound") + " " + (info != null ? info.getDirection() : "NoDirectionFound"));
         Session.selectedDay = null;
     }
 
@@ -166,19 +165,32 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
 
         return sharedPrefs.getBoolean("pref_notificationGPS", false);
     }
+private boolean getFahrenheitPref() {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
+
+        return sharedPrefs.getBoolean("pref_fahrenheit", false);
+    }
 
     private void addNotification(float temperature, String locationName) {
-        Log.i("NOTIFICATION", "starting");
+        Log.i("Notification", "creating");
 
         Intent intent = new Intent(MainActivity.getAppContext(), MainActivity.class); // Here pass your activity where you want to redirect.
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getContext(), (int) (Math.random() * 100), intent, 0);
 
+        String contentText;
+        if(getFahrenheitPref()){
+            contentText ="The temp in " + locationName + " is " + temperature + " °F";
+        }else{
+
+            contentText ="The temp in " + locationName + " is " + temperature + " °C";
+        }
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.myContext, "default")
                 .setSmallIcon(R.drawable.main_icon)
                 .setContentTitle("GeoWeather")
-                .setContentText("The temp in " + locationName + " is " + temperature).setContentIntent(contentIntent);
+                .setContentText(contentText).setContentIntent(contentIntent);
 
         NotificationManager mManager = (NotificationManager) MainActivity.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mManager.notify(1, mBuilder.build());

@@ -45,13 +45,13 @@ public abstract class ApiDocumentBuilder {
     }
 
     public static Document callApi(String url) {
-        Log.i("APIDOCBUILDER", "callApi: url: " + url);
+        Log.i("ApiDocumentBuilder", "callApi: url: " + url); //keep, prints all urls to the console
 
         try {
             dBuilder = dbFactory.newDocumentBuilder();
 
         } catch (ParserConfigurationException e) {
-            Log.e("CALLAPI", "DocumentBuilder initialisation failed: " + e.getStackTrace());
+            Log.e("CallApi", "DocumentBuilder initialisation failed: " + e.getStackTrace()); //is error message
         }
 
         try {
@@ -59,12 +59,12 @@ public abstract class ApiDocumentBuilder {
             URLConnection connection = link.openConnection();
             InputStream source = connection.getInputStream();
             Document parsed = dBuilder.parse(source);
-            Log.e("PRINTED_XML", Helper.getStringFromDocument(parsed));
+            //Log.e("PRINTED_XML", Helper.getStringFromDocument(parsed));
             return parsed;
 
 
         } catch (UnknownHostException e) {
-            Log.e("INTERNET", "None found...");
+            Log.e("ApiDocumentBuilder", "None found..."); //Error message
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +89,7 @@ public abstract class ApiDocumentBuilder {
                     t = "https://www.mapquestapi.com/geocoding/v1/reverse?key=JYFF5aW2u906EZwyCpfS2QAiqgg6AWUk&location=" + firstArg + "%2C" + secondArg + "&outFormat=xml&thumbMaps=false";
                     return t;
                 default:
-                    Log.e("URLFORMAT", "wrong urlType entered");
+                    Log.e("UrlFormatting", "wrong urlType entered"); //keep, is error message
             }
         } catch (Exception e) {
             e.printStackTrace();

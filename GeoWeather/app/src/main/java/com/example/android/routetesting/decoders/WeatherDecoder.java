@@ -39,7 +39,7 @@ public abstract class WeatherDecoder {
         }
 
         Document apiResult = null;
-        Log.i("BEFORE", "before");
+
 
         apiResult = ApiDocumentBuilder.decode(ApiUrl.METNO, coord.getLat(), coord.getLon());
 
@@ -63,7 +63,7 @@ public abstract class WeatherDecoder {
         ArrayList<WeatherInfo> infos = getMoreWeatherFromApi(coord, dates);
 
         if (infos == null || infos.isEmpty()) {
-            Log.i("SINGLEWEATHERFROMAPI", "infos == null or empty");
+            Log.e("getSingleWeather", "infos == null or empty"); //keep, is kind of error
             return null;
         }
 
@@ -88,15 +88,15 @@ public abstract class WeatherDecoder {
             }
             currentDay12 = Helper.getGivenDateInFormat(calendar);
 
-            Log.e("CurrentDay12", currentDay12);
+            //Log.e("CurrentDay12", currentDay12);
 
             calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 13, 0, 0);
             String currentDay13 = Helper.getGivenDateInFormat(calendar);
-            Log.e("CurrentDay13", currentDay13);
+            //Log.e("CurrentDay13", currentDay13);
 
             calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 6, 0, 0);
             String currentDay06 = Helper.getGivenDateInFormat(calendar);
-            Log.e("CurrentDay06", currentDay06);
+            //Log.e("CurrentDay06", currentDay06);
 
             NodeList timeNodes = weatherDoc.getElementsByTagName("time");
 
@@ -108,7 +108,7 @@ public abstract class WeatherDecoder {
 
                 if (attributes.getNamedItem("from").getNodeValue().equals(currentDay12)) {
                     if (attributes.getNamedItem("to").getNodeValue().equals(currentDay12)) {
-                        Log.i("DECODE", "From and To = " + currentDay12 + "; loop: " + i);
+                        //Log.i("DECODE", "From and To = " + currentDay12 + "; loop: " + i);
                         node = node.getChildNodes().item(1);//Skip Location node
 
                         info.setLocation(coord);
@@ -136,7 +136,8 @@ public abstract class WeatherDecoder {
             }
             return info;
         } catch (Exception e) {
-            Log.e("WEATHERDOC_ERROR", e.getLocalizedMessage());
+            Log.e("getWeatherFromDocument", e.getLocalizedMessage());
+            e.printStackTrace();
         }
         return null;
 
