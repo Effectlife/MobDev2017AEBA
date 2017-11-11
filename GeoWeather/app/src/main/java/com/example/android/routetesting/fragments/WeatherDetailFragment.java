@@ -181,7 +181,7 @@ private boolean getFahrenheitPref() {
 
         String contentText;
         if(getFahrenheitPref()){
-            contentText ="The temp in " + locationName + " is " + temperature + " °F";
+            contentText ="The temp in " + locationName + " is " + Helper.celsiusToFahrenheit(temperature) + " °F";
         }else{
 
             contentText ="The temp in " + locationName + " is " + temperature + " °C";
