@@ -21,6 +21,13 @@ import java.util.Calendar;
  * Created by AaronEnglerPXL on 17/10/2017.
  */
 
+
+/**
+ * CustomListItemAdapter:
+ * This adapter is used for the listitems to show day+temp or city+humidity depending on where they are called
+ * The naming of the variables in the CustomListItem is misleading because I named them
+ * before I used them to show the city and humidity.
+ */
 public class CustomListItemAdapter extends BaseAdapter {
 
     private Context ctx;

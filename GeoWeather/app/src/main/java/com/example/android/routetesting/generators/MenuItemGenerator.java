@@ -8,6 +8,11 @@ import java.util.ArrayList;
  * Created by AaronEnglerPXL on 19/10/2017.
  */
 
+/**
+ * small function to return CustomMenuItems for the drawer, you can easily add a string to the array and it will be
+ * displayed in the drawer.
+ */
+
 public abstract class MenuItemGenerator {
     private static String[] menuEntries = {"Settings", "Weather on Route", "About"};
 

@@ -20,6 +20,9 @@ import java.util.ArrayList;
  * Created by AaronEnglerPXL on 19/10/2017.
  */
 
+/**
+ * A CustomMenuItemAdapter is used in the drawer. it simply has a string in it.
+ */
 public class CustomMenuItemAdapter extends BaseAdapter {
 
     private Context ctx;

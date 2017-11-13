@@ -113,6 +113,16 @@ public class WeatherInfo {
         return Weekday.values()[c.get(Calendar.DAY_OF_WEEK) - 1].getValue() + " ";
     }
 
+
+    /**
+     * converts an ArrayList<WeatherInfo> to an ArrayList<CustomListItem>
+     *
+     *
+     * @param infos
+     * @param cityname is used to determine if the left item is a weekday (false) or the cityname (true)
+     * @param humidity is used to determine if the right item is temperature (false) or humidity (true)
+     * @return
+     */
     public static ArrayList<CustomListItem> convertListWeatherToListCLI(ArrayList<WeatherInfo> infos, boolean cityname, boolean humidity) {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getAppContext());

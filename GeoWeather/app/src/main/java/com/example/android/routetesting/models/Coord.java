@@ -45,6 +45,13 @@ public class Coord {
         this.lon = lon;
     }
 
+
+    /**
+     * Function to calculate coordinates according to the maxdistance
+     * function is actually never called since it doesn't work properly
+     * @param maxdistance
+     * @param coords
+     */
     public static void calculateConnectionCoords(int maxdistance, ArrayList<Coord> coords) {
         boolean longerFound = true;
         boolean failure = false;
@@ -76,6 +83,13 @@ public class Coord {
         return "(" + lat + "," + lon + ")";
     }
 
+
+    /**
+     * gets the city name from this coord, has a parameter async to look if the api has to be called async or not
+     * (depending on if the caller is already async or not)
+     * @param async
+     * @return
+     */
     @SuppressLint("StaticFieldLeak")
     public String getCityName(boolean async) {
         Document apiResult = null;

@@ -23,7 +23,19 @@ import java.util.concurrent.ExecutionException;
  * Created by AaronEnglerPXL on 10/10/2017.
  */
 
+/**
+ * This class contains most code to retrieve weatherinformation
+ */
 public abstract class WeatherDecoder {
+
+
+    /**
+     * Returns an ArrayList<WeatherInfo> on a given Coord and an ArrayList of Dates
+     * if the given coord is (1000,1000) it adds an empty weatherinfo object for each date
+     * @param coord
+     * @param dates
+     * @return
+     */
 
     //TODO: Prevent multiple calls to the api for multiple dates if the dates are in the same result
     public static ArrayList<WeatherInfo> getMoreWeatherFromApi(final Coord coord, final ArrayList<Date> dates) {
@@ -55,6 +67,13 @@ public abstract class WeatherDecoder {
         return infos;
     }
 
+    /**
+     * returns a coord for a single date, this calls the getMoreWeatherFromApi, with an Arraylist<Date> containing only 1 item
+     * @param coord
+     * @param date
+     * @return
+     */
+
     public static WeatherInfo getSingleWeatherFromApi(final Coord coord, final Date date) {
 
         ArrayList<Date> dates = new ArrayList<>();
@@ -69,6 +88,14 @@ public abstract class WeatherDecoder {
 
         return infos.get(0);
     }
+
+    /**
+     * This function returns a WeatherInfo object from a given Coord, Date and a Document
+     * @param coord
+     * @param date
+     * @param weatherDoc
+     * @return
+     */
 
     private static WeatherInfo getWeatherFromDocument(final Coord coord, final Date date, final Document weatherDoc) {
 
@@ -144,6 +171,16 @@ public abstract class WeatherDecoder {
 
     }
 
+
+
+    /**
+     * Returns an ArrayList<WeatherInfo> for the given route
+     * maxDistance is ignored (see Coord)
+     * @param maxDistance
+     * @param firstAddress
+     * @param secondAddress
+     * @return
+     */
     public static ArrayList<WeatherInfo> getWeathersOnRoute(int maxDistance, String firstAddress, String secondAddress) {
 
         ArrayList<Step> steps = RouteDecoder.routeStepFromApi(maxDistance, firstAddress, secondAddress);
@@ -159,6 +196,12 @@ public abstract class WeatherDecoder {
         }
         return weatherInfos;
     }
+
+    /**
+     * Returns an ArrayList<WeatherInfo> for the next 7 days (today is Tuesday, returns Wednesday->Tuesday)
+     * @param coord
+     * @return
+     */
 
     public static ArrayList<WeatherInfo> getNextWeekInfo(Coord coord) {
         Date date = Calendar.getInstance().getTime();

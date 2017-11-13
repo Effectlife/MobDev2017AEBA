@@ -42,6 +42,9 @@ import static com.example.android.routetesting.MainActivity.getAppContext;
  * Created by 11500399 on 08-Nov-17.
  */
 
+/**
+ * Fragment to display the weekforecast lsit
+ */
 
 public class WeekForecastFragment extends Fragment {
 
@@ -57,12 +60,23 @@ public class WeekForecastFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * returns the location from the sharedPreferences
+     * @return
+     */
     private static String getPrefLocation() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         String pref = sharedPrefs.getString("pref_location", "DEFAULT");
         return pref;
     }
+
+    /**
+     * returns a Coord using the Location value from sharedPreferences
+     * if gpsOverride is true, the coord will always be the GPS and the Preference is ignored
+     * @param gpsOverride
+     * @return
+     */
 
     public static Coord loadLocationInfo(boolean gpsOverride) {
         String location = getPrefLocation().toLowerCase();
@@ -81,6 +95,9 @@ public class WeekForecastFragment extends Fragment {
         }
     }
 
+    /**
+     * Is called when the detail refreshes
+     */
     public void onRefresh() {
         @SuppressLint("StaticFieldLeak") AsyncTask<Object, Void, Object[]> task = new AsyncTask<Object, Void, Object[]>() {
 
@@ -108,6 +125,11 @@ public class WeekForecastFragment extends Fragment {
         };
         task.execute();
     }
+
+    /**
+     * Fills the weeklist with data
+     * @param weatherInfos
+     */
     public void populateWeekList(final ArrayList<WeatherInfo> weatherInfos) {
 
         ListView weathersList = (ListView) rootView.findViewById(R.id.week_forecast_list_view);

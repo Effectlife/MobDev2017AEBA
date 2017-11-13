@@ -29,21 +29,42 @@ import java.security.cert.X509Certificate;
 /**
  * Created by Effectlife on 1/10/2017.
  */
+
+/**
+ * The ApiDocumentBuilder is used to connect to the internet and give back a W3C Document from the chosen XML api
+ */
 public abstract class ApiDocumentBuilder {
 
     private static DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     private static DocumentBuilder dBuilder;
 
-
+    /**
+     * Returns a Document from the given API with 2 arguments
+     * @param urlType
+     * @param firstArg
+     * @param secondArg
+     * @return
+     */
     public static Document decode(int urlType, Object firstArg, Object secondArg) {
         Document temp = callApi(urlFormat(urlType, firstArg, secondArg));
         return temp;
     }
 
+    /**
+     * Returns a Document from the given API and a single argument,
+     * this calls the dual-argument decode function with the second argument being null
+     * @param urlType
+     * @param firstArg
+     * @return
+     */
     public static Document decode(int urlType, Object firstArg) {
         return callApi(urlFormat(urlType, firstArg, null));
     }
-
+    /**
+     * Returns an XML document from the given URL
+     * @param url
+     * @return
+     */
     public static Document callApi(String url) {
         Log.i("ApiDocumentBuilder", "callApi: url: " + url); //keep, prints all urls to the console
 
@@ -70,7 +91,13 @@ public abstract class ApiDocumentBuilder {
         }
         return null;
     }
-
+    /**
+     * This function returns a String in the shape of a URL.
+     * @param urlType
+     * @param firstArg
+     * @param secondArg
+     * @return
+     */
     public static String urlFormat(int urlType, Object firstArg, Object secondArg) {
 
         String t;

@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 
 public class CustomMenuItem {
 
+    //drawable is never used, was planned to have an image in the drawer, but was never implemented
     private Drawable image;
     private String title;
 

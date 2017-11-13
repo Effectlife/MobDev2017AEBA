@@ -13,6 +13,9 @@ import com.example.android.routetesting.SettingsActivity;
  * Created by AaronEnglerPXL on 19/10/2017.
  */
 
+/**
+ * Sets the listener on the drawer items and starts the chosen activity
+ */
 public class CustomDrawerClickListener implements ListView.OnItemClickListener {
 
     @Override

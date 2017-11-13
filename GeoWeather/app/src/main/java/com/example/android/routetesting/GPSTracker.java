@@ -21,7 +21,11 @@ import android.util.Log;
  * Created by AaronEnglerPXL on 19/10/2017.
  */
 
-//
+/**
+ * most is copied from the internet, cannot find the exact source though...
+ * I only added the permission request
+ */
+
 
 public class GPSTracker extends Service implements LocationListener {
 

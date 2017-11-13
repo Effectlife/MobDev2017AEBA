@@ -3,6 +3,10 @@ package com.example.android.routetesting.lookups;
 /**
  * Created by Effectlife on 1/10/2017.
  */
+
+/**
+ * This contains the different api's that are called
+ */
 public abstract class ApiUrl {
     public static final int YAHOOWEATHER = 0;
     public static final int GOOGLELOC = 1;

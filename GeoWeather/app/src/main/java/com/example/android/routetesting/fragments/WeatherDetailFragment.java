@@ -41,6 +41,10 @@ import static com.example.android.routetesting.MainActivity.getAppContext;
  * Created by 11500399 on 08-Nov-17.
  */
 
+
+/**
+ * Fragment used to display a WeatherDetail
+ */
 public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout swipeContainer;
     private View rootView;
@@ -68,13 +72,25 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         return rootView;
     }
 
+
+    /**
+     * returns the location from the sharedPreferences
+     * @return
+     */
     private static String getPrefLocation() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         String pref = sharedPrefs.getString("pref_location", "DEFAULT");
-        Log.e("DetailPREFPREF", "pref: " + pref);
+        Log.e("Preferences", "pref: " + pref);
         return pref;
     }
+
+    /**
+     * returns a Coord using the Location value from sharedPreferences
+     * if gpsOverride is true, the coord will always be the GPS and the Preference is ignored
+     * @param gpsOverride
+     * @return
+     */
 
     public static Coord loadLocationInfo(boolean gpsOverride) {
         String location = getPrefLocation().toLowerCase();
@@ -86,6 +102,13 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         return RouteDecoder.geoLocator(location);
     }
 
+    /**
+     * Returns a WeatherInfo for the given Coord on the time of calling
+     * If the Session contains a currentSelectedInfo (if you chose an item from the list)
+     *  it returns the selected info instead
+     * @param coord
+     * @return
+     */
     private WeatherInfo fetchWeatherDetails(Coord coord) {
 
         WeatherInfo info = Session.currentSelectedInfo;
@@ -103,6 +126,10 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
+    /**
+     * This function updates the UI with the information from the given info
+     * @param info
+     */
     private void formatWeatherDetail(WeatherInfo info) {
 
         Log.i("FORMATDETAIL", info.toString());
@@ -160,17 +187,32 @@ public class WeatherDetailFragment extends Fragment implements SwipeRefreshLayou
         Session.selectedDay = null;
     }
 
+
+    /**
+     * returns the notificationOverride from the sharedPreferences
+     * @return
+     */
     private boolean getNotificationGPS() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         return sharedPrefs.getBoolean("pref_notificationGPS", false);
     }
+
+    /**
+     * returns the Fahrenheit setting from the sharedPreferences
+     * @return
+     */
 private boolean getFahrenheitPref() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
 
         return sharedPrefs.getBoolean("pref_fahrenheit", false);
     }
 
+    /**
+     * Adds a notification with the given temo and locationname
+     * @param temperature
+     * @param locationName
+     */
     private void addNotification(float temperature, String locationName) {
         Log.i("Notification", "creating");
 
@@ -196,6 +238,10 @@ private boolean getFahrenheitPref() {
         mManager.notify(1, mBuilder.build());
     }
 
+
+    /**
+     * this function gets called when the detail is refreshed
+     */
     @Override
     public void onRefresh() {
 
@@ -228,13 +274,13 @@ private boolean getFahrenheitPref() {
             @Override
             protected Object[] doInBackground(Object[] params) {
 
-                Log.i("WDF", "dodoing " + coord + "; notifcoord: " + notificationCoord);
+                //Log.i("WDF", "dodoing " + coord + "; notifcoord: " + notificationCoord);
 
                 Object[] obj = new Object[2];
                 obj[0] = fetchWeatherDetails(coord);
-                Log.i("WDF", "fetched weatherdetails: " + obj[0]);
+                //Log.i("WDF", "fetched weatherdetails: " + obj[0]);
                 currentWeatherGPS[0] = WeatherDecoder.getSingleWeatherFromApi(notificationCoord, Calendar.getInstance().getTime());
-                Log.i("WDF", "fetched weatherinfoGPS" + currentWeatherGPS[0]);
+                //Log.i("WDF", "fetched weatherinfoGPS" + currentWeatherGPS[0]);
 
                 return obj;
             }
@@ -244,7 +290,7 @@ private boolean getFahrenheitPref() {
                 super.onPostExecute(obj);
                 formatWeatherDetail((WeatherInfo) obj[0]);
                 String cityname = currentWeatherGPS[0].getLocation().getCityName(true);
-                Log.i("WDF", "recieved cityname " + cityname);
+                //Log.i("WDF", "recieved cityname " + cityname);
                 addNotification(currentWeatherGPS[0].getTemperature(), cityname);
                 swipeContainer.setRefreshing(false);
                 Session.detailScreen = 0;
